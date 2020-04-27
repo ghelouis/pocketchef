@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View, Button } from 'react-native';
-
-import { openDatabase } from "expo-sqlite";
-const db = openDatabase("PocketChefDB.db");
+import DB from '../database/Database'
 
 export default function RecipesScreen({ navigation }) {
 
@@ -23,9 +21,7 @@ export default function RecipesScreen({ navigation }) {
         return false
     }
 
-    db.transaction(tx => {
-        tx.executeSql('SELECT id, title FROM recipes', [], onSuccess, onError)
-    });
+    DB.getRecipes(onSuccess, onError)
 
     return (
         <View style={styles.container}>

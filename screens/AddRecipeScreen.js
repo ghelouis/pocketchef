@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button} from 'react-native';
-
-// TODO: create DB connection in App.js and pass it to screens?
-import { openDatabase } from "expo-sqlite";
-const db = openDatabase("PocketChefDB.db");
-db.transaction(tx => {
-    tx.executeSql('CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, name TEXT)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT, ingredients TEXT, instructions TEXT, userId TEXT, FOREIGN KEY(userId) REFERENCES users(id))')
-});
+import DB from '../database/Database'
 
 
 export default function AddRecipeScreen({ navigation }) {
@@ -23,8 +16,6 @@ export default function AddRecipeScreen({ navigation }) {
     });
 
     const onSaveRecipe = () => {
-        console.log('Recipe ' + id + ' successfully saved')
-        // TODO: once ok is clicked, go back to RecipesScreen page (cause the id changes if we stay here)
         Alert.alert('',
             'Recipe saved successfully',
             [
@@ -35,12 +26,7 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const saveRecipe = () => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'INSERT INTO recipes(id, title, ingredients, instructions) VALUES (?,?,?,?)',
-                [id, title, ingredients, instructions],
-                onSaveRecipe());
-        });
+        DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe)
     }
 
     return (
