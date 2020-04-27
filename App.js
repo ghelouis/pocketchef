@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecipesScreen from './screens/RecipesScreen';
+import AddRecipeScreen from './screens/AddRecipeScreen';
 
 const Stack = createStackNavigator();
 
@@ -53,7 +54,16 @@ export default function App(props) {
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Recipes" component={RecipesScreen} />
+            <Stack.Screen
+                name="Recipes"
+                component={RecipesScreen}
+                options={{ title: 'Recipes' }}
+            />
+            <Stack.Screen
+                name="AddRecipe"
+                component={AddRecipeScreen}
+                options={{ title: 'Add recipe' }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>

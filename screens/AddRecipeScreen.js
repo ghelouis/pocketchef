@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button} from 'react-native';
 
+// TODO: create DB connection in App.js and pass it to screens?
 import { openDatabase } from "expo-sqlite";
 const db = openDatabase("PocketChefDB.db");
 db.transaction(tx => {
