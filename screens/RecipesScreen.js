@@ -9,15 +9,12 @@ export default function RecipesScreen({ navigation }) {
     const [data, setData] = useState([])
 
     const onSuccess = (tx, results) => {
-        console.log("Query completed. Data:")
         const tmpData = []
         const len = results.rows.length
         for (let i = 0; i < len; i++) {
             let row = results.rows.item(i)
-            console.log(row.id + " " + row.title)
             tmpData.push({key: row.id, title: row.title})
         }
-        console.log("Data END.")
         setData(tmpData)
     }
 
@@ -26,11 +23,9 @@ export default function RecipesScreen({ navigation }) {
         return false
     }
 
-    //const queryRecipes = (callback) => {
-        db.transaction(tx => {
-            tx.executeSql('SELECT id, title FROM recipes', [], onSuccess, onError)
-        });
-    //}
+    db.transaction(tx => {
+        tx.executeSql('SELECT id, title FROM recipes', [], onSuccess, onError)
+    });
 
     return (
         <View style={styles.container}>

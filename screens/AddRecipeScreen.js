@@ -10,7 +10,7 @@ db.transaction(tx => {
 });
 
 
-export default function AddRecipeScreen() {
+export default function AddRecipeScreen({ navigation }) {
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
@@ -25,7 +25,13 @@ export default function AddRecipeScreen() {
     const onSaveRecipe = () => {
         console.log('Recipe ' + id + ' successfully saved')
         // TODO: once ok is clicked, go back to RecipesScreen page (cause the id changes if we stay here)
-        Alert.alert('Recipe successfully saved!')
+        Alert.alert('',
+            'Recipe saved successfully',
+            [
+                {text: 'OK', onPress: () => navigation.navigate('Recipes')},
+            ],
+            {cancelable: false}
+        )
     }
 
     const saveRecipe = () => {
