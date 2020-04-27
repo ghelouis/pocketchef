@@ -1,46 +1,7 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-//import { openDatabase } from 'react-native-sqlite-storage';
-//var db = openDatabase({name: 'PocketChefDatabase.db'});
-
 
 export default function RecipesScreen() {
-
-        //constructor(props) {
-        //super(props);
-        /*db.transaction(function (txn) {
-                txn.executeSql(
-                    "SELECT name FROM sqlite_master WHERE type='table' AND name='users'",
-                    [],
-                    function (tx, res) {
-                            console.log('users:', res.rows.length);
-                            if (res.rows.length === 0) {
-                                    txn.executeSql('DROP TABLE IF EXISTS users', []);
-                                    txn.executeSql(
-                                        'CREATE TABLE IF NOT EXISTS users(id TEXT, name TEXT)',
-                                        []
-                                    );
-                            }
-                    }
-                );
-        });
-        db.transaction(function (txn) {
-                txn.executeSql(
-                    "SELECT name FROM sqlite_master WHERE type='table' AND name='recipes'",
-                    [],
-                    function (tx, res) {
-                            console.log('recipes:', res.rows.length);
-                            if (res.rows.length === 0) {
-                                    txn.executeSql('DROP TABLE IF EXISTS recipes', []);
-                                    txn.executeSql(
-                                        'CREATE TABLE IF NOT EXISTS recipes(id TEXT, title TEXT, ingredients TEXT, instructions TEXT)',
-                                        []
-                                    );
-                            }
-                    }
-                );
-        });*/
-        //}
 
         return (
             <View style={styles.container}>

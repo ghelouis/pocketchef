@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import {TextInput, View, StyleSheet, Text, AsyncStorage, Alert} from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
-//import { openDatabase } from 'react-native-sqlite-storage';
-//var db = openDatabase({name: 'PocketChefDatabase.db'});
+import {TextInput, View, StyleSheet, Text, Alert, Button} from 'react-native';
+
+import { openDatabase } from "expo-sqlite";
+const db = openDatabase("PocketChefDB.db");
+db.transaction(tx => {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, name TEXT)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT, ingredients TEXT, instructions TEXT, userId TEXT, FOREIGN KEY(userId) REFERENCES users(id))')
+});
 
 
 export default function AddRecipeScreen() {
@@ -10,57 +14,55 @@ export default function AddRecipeScreen() {
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
 
+    // waiting for this issue to be resolved: https://github.com/uuidjs/uuid/issues/375
+    // (should be good enough for now - from https://stackoverflow.com/a/2117523)
+    const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 
-        /*saveRecipe() {
-            const id = uuidv4();
-            db.transaction(function (tx) {
-                tx.executeSql(
-                    'INSERT INTO recipes(id, title, ingredients, instructions) VALUES (?,?,?,?)',
-                    [id, this.state.title, this.state.ingredients, this.state.instructions],
-                    (tx, results) => {
-                        console.log('Save title results', results.rowsAffected);
-                        if (results.rowsAffected > 0) {
-                            Alert.alert(
-                                'Success',
-                                'Recipe saved successfully',
-                                [
-                                    {
-                                        text: 'Ok'
-                                    },
-                                ],
-                                {cancelable: false}
-                            );
-                        } else {
-                            alert('Failed to save recipe');
-                        }
-                    }
-                );
+    const onSaveRecipe = () => {
+        console.log('Recipe ' + id + ' successfully saved')
+        // TODO: once ok is clicked, go back to RecipesScreen page (cause the id changes if we stay here)
+        Alert.alert('Recipe successfully saved!')
+    }
 
-            });
-        }*/
+    const saveRecipe = () => {
+        db.transaction(tx => {
+            tx.executeSql(
+                'INSERT INTO recipes(id, title, ingredients, instructions) VALUES (?,?,?,?)',
+                [id, title, ingredients, instructions],
+                onSaveRecipe());
+        });
+    }
 
-        return (
-            <View>
-                    <Text>Title</Text>
-                    <TextInput
-                        placeholder="Title"
-                        onChangeText={title => setTitle(title)}
-                        defaultValue={title}
-                    />
-                    <Text>Ingredients</Text>
-                    <TextInput
-                        placeholder="Ingredients"
-                        onChangeText={ingredients => setIngredients(ingredients)}
-                        multiline={true}
-                    />
-                    <Text>Instructions</Text>
-                    <TextInput
-                        placeholder="Instructions"
-                        onChangeText={instructions => setInstructions(instructions)}
-                        multiline={true}
-                    />
-            </View>
-        );
+    return (
+        <View>
+            <Text>Title</Text>
+            <TextInput
+                placeholder="Title"
+                onChangeText={title => setTitle(title)}
+            />
+            <Text>Ingredients</Text>
+            <TextInput
+                placeholder="Ingredients"
+                onChangeText={ingredients => setIngredients(ingredients)}
+                multiline={true}
+            />
+            <Text>Instructions</Text>
+            <TextInput
+                placeholder="Instructions"
+                onChangeText={instructions => setInstructions(instructions)}
+                multiline={true}
+            />
+            <Button
+                onPress={saveRecipe}
+                title="Save"
+                accessibilityLabel="Save"
+                disabled={!title || !ingredients || !instructions}
+            />
+        </View>
+    );
 }
 
 AddRecipeScreen.navigationOptions = {
