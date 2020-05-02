@@ -22,7 +22,7 @@ export default function AddRecipeScreen({ navigation }) {
         Alert.alert('',
             'Recipe saved successfully',
             [
-                {text: 'OK', onPress: () => navigation.navigate('Recipes')},
+                {text: 'OK', onPress: () => navigation.navigate('Recipes')}
             ],
             {cancelable: false}
         )

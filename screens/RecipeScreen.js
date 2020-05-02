@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 
@@ -29,6 +29,25 @@ export default function RecipeScreen({ route, navigation }) {
         return false
     }
 
+    const onDeleteSuccess = () => {
+        console.log("Delete recipe success!")
+        navigation.navigate('Recipes')
+    }
+
+    const onDeleteError = (err) => {
+        console.log("Delete recipe error: ", err)
+    }
+
+    const onDelete = () => {
+        Alert.alert('',
+            'Supprimer la recette?',
+            [
+                {text: 'OK', onPress: () => DB.deleteRecipe(recipeId, onDeleteSuccess, onDeleteError)}
+            ],
+            {cancelable: true}
+        )
+    }
+
     DB.getRecipe(recipeId, onSuccess, onError)
 
     return (
@@ -47,7 +66,7 @@ export default function RecipeScreen({ route, navigation }) {
                     iconStyle={styles.icon}
                     name="trash"
                     backgroundColor="red"
-                    //onPress={() => navigation.navigate('AddRecipe')}
+                    onPress={onDelete}
                     accessibilityLabel="Delete recipe"
                 />
                 <FontAwesome.Button

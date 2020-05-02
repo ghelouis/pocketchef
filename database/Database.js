@@ -61,4 +61,10 @@ export default class DB {
         });
     }
 
+    static deleteRecipe(recipeId, onSuccess, onError) {
+        db.transaction(tx => {
+            tx.executeSql('DELETE FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
+        })
+    }
+
 }
