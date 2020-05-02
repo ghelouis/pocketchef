@@ -30,7 +30,6 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const onDeleteSuccess = () => {
-        console.log("Delete recipe success!")
         navigation.navigate('Recipes')
     }
 
