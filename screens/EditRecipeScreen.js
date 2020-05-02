@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
+import i18n from 'i18n-js';
 
 
 /**
@@ -35,7 +36,7 @@ export default function EditRecipeScreen({ route, navigation }) {
 
     const onUpdate = () => {
         Alert.alert('',
-            'Recipe updated successfully',
+            i18n.t('updateSuccess'),
             [
                 {text: 'OK', onPress: () => navigation.navigate('Recipe', { recipeId: recipeId })}
             ],
@@ -54,20 +55,20 @@ export default function EditRecipeScreen({ route, navigation }) {
     return (
         <View style={styles.main}>
             <ScrollView>
-                <Text style={styles.header}>Title</Text>
+                <Text style={styles.header}>{i18n.t('title')}</Text>
                 <TextInput
                     style={styles.details}
                     onChangeText={t => setTitle(t)}
                     value={title}
                 />
-                <Text style={styles.header}>Ingredients</Text>
+                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
                 <TextInput
                     style={styles.details}
                     onChangeText={ingredients => setIngredients(ingredients)}
                     multiline={true}
                     value={ingredients}
                 />
-                <Text style={styles.header}>Instructions</Text>
+                <Text style={styles.header}>{i18n.t('instructions')}</Text>
                 <TextInput
                     style={styles.details}
                     onChangeText={instructions => setInstructions(instructions)}
@@ -78,7 +79,7 @@ export default function EditRecipeScreen({ route, navigation }) {
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={updateRecipe}
-                    title="Update"
+                    title={i18n.t('update')}
                     accessibilityLabel="Update"
                     disabled={!title || !ingredients || !instructions}
                 />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
+import i18n from 'i18n-js';
 
 
 /**
@@ -24,7 +25,7 @@ export default function AddRecipeScreen({ navigation }) {
 
     const onSaveRecipe = () => {
         Alert.alert('',
-            'Recipe saved successfully',
+            i18n.t('saveSuccess'),
             [
                 {text: 'OK', onPress: () => navigation.navigate('Recipes')}
             ],
@@ -39,23 +40,23 @@ export default function AddRecipeScreen({ navigation }) {
     return (
         <View style={styles.main}>
             <ScrollView>
-                <Text style={styles.header}>Title</Text>
+                <Text style={styles.header}>{i18n.t('title')}</Text>
                 <TextInput
                     style={styles.details}
-                    placeholder="Title"
+                    placeholder={i18n.t('title')}
                     onChangeText={title => setTitle(title)}
                 />
-                <Text style={styles.header}>Ingredients</Text>
+                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
                 <TextInput
                     style={styles.details}
-                    placeholder="Ingredients"
+                    placeholder={i18n.t('ingredients')}
                     onChangeText={ingredients => setIngredients(ingredients)}
                     multiline={true}
                 />
-                <Text style={styles.header}>Instructions</Text>
+                <Text style={styles.header}>{i18n.t('instructions')}</Text>
                 <TextInput
                     style={styles.details}
-                    placeholder="Instructions"
+                    placeholder={i18n.t('instructions')}
                     onChangeText={instructions => setInstructions(instructions)}
                     multiline={true}
                 />
@@ -63,7 +64,7 @@ export default function AddRecipeScreen({ navigation }) {
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={saveRecipe}
-                    title="Save"
+                    title={i18n.t('save')}
                     accessibilityLabel="Save"
                     disabled={!title || !ingredients || !instructions}
                 />

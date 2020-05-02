@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
+import i18n from 'i18n-js';
 
 /**
  * Screen displaying a specific recipe
@@ -52,11 +53,11 @@ export default function RecipeScreen({ route, navigation }) {
     return (
         <View style={styles.main}>
             <ScrollView>
-                <Text style={styles.header}>Title</Text>
+                <Text style={styles.header}>{i18n.t('title')}</Text>
                 <Text style={styles.details}>{title}</Text>
-                <Text style={styles.header}>Ingredients</Text>
+                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
                 <Text style={styles.details}>{ingredients}</Text>
-                <Text style={styles.header}>Instructions</Text>
+                <Text style={styles.header}>{i18n.t('instructions')}</Text>
                 <Text style={styles.details}>{instructions}</Text>
             </ScrollView>
             <View style={styles.buttonContainer}>

@@ -1,0 +1,13 @@
+{
+  "titre": "Title",
+  "ingredients": "Ingredients",
+  "instructions": "Instructions",
+  "editRecipe": "Edit recipe",
+  "recipe": "Recipe",
+  "addRecipe": "Add recipe",
+  "recipes": "Recipes",
+  "update": "Update",
+  "save": "Save",
+  "updateSuccess": "Recipe updated successfully",
+  "saveSuccess": "Recipe saved successfully"
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Titre",
+  "ingredients": "Ingrédients",
+  "instructions": "Préparation",
+  "editRecipe": "Modifier la recette",
+  "recipe": "Recette",
+  "addRecipe": "Ajouter une recette",
+  "recipes": "Recettes",
+  "update": "Mettre à jour",
+  "save": "Sauvegarder",
+  "updateSuccess": "Recette mise à jour avec succès",
+  "saveSuccess": "Recette sauvegardée avec succès"
+}

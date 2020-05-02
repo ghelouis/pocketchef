@@ -8,6 +8,17 @@ import AddRecipeScreen from './screens/AddRecipeScreen';
 import RecipeScreen from './screens/RecipeScreen';
 import EditRecipeScreen from './screens/EditRecipeScreen';
 import DB from './database/Database'
+import * as Localization from 'expo-localization';
+import i18n from 'i18n-js';
+import frLangFile from './translations/fr.json'
+import enLangFile from './translations/en.json'
+
+i18n.translations = {
+  en: enLangFile,
+  fr: frLangFile
+};
+i18n.locale = Localization.locale;
+i18n.fallbacks = true;
 
 const Stack = createStackNavigator();
 
@@ -44,22 +55,22 @@ export default function App(props) {
             <Stack.Screen
                 name="Recipes"
                 component={RecipesScreen}
-                options={{ title: 'Recipes' }}
+                options={{ title: i18n.t('recipes') }}
             />
             <Stack.Screen
                 name="AddRecipe"
                 component={AddRecipeScreen}
-                options={{ title: 'Add recipe' }}
+                options={{ title: i18n.t('addRecipe') }}
             />
             <Stack.Screen
                 name="Recipe"
                 component={RecipeScreen}
-                options={{ title: 'Recipe' }}
+                options={{ title: i18n.t('recipe') }}
             />
             <Stack.Screen
                 name="EditRecipe"
                 component={EditRecipeScreen}
-                options={{ title: 'Edit recipe' }}
+                options={{ title: i18n.t('editRecipe') }}
             />
           </Stack.Navigator>
         </NavigationContainer>
