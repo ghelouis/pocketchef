@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
 
@@ -7,16 +7,20 @@ import DB from '../database/Database'
  * Screen for creating a new recipe
  */
 export default function AddRecipeScreen({ navigation }) {
+    const [id, setId] = useState('');
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
 
-    // waiting for this issue to be resolved: https://github.com/uuidjs/uuid/issues/375
-    // (should be good enough for now - from https://stackoverflow.com/a/2117523)
-    const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+    useEffect(() => {
+        // waiting for this issue to be resolved: https://github.com/uuidjs/uuid/issues/375
+        // (should be good enough for now - from https://stackoverflow.com/a/2117523)
+        const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+        setId(id)
+    }, [])
 
     const onSaveRecipe = () => {
         Alert.alert('',
