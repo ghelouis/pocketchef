@@ -61,6 +61,15 @@ export default class DB {
         });
     }
 
+    static updateRecipe(id, title, ingredients, instructions, onUpdate, onUpdateError) {
+        db.transaction(tx => {
+            tx.executeSql(
+                'UPDATE recipes SET title=?, ingredients=?, instructions=? WHERE id=?',
+                [title, ingredients, instructions, id],
+                onUpdate, onUpdateError);
+        });
+    }
+
     static deleteRecipe(recipeId, onSuccess, onError) {
         db.transaction(tx => {
             tx.executeSql('DELETE FROM recipes WHERE id=?', [recipeId], onSuccess, onError)

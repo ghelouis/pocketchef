@@ -73,7 +73,7 @@ export default function RecipeScreen({ route, navigation }) {
                     style={styles.button}
                     iconStyle={styles.icon}
                     name="pencil"
-                    //onPress={() => navigation.navigate('AddRecipe')}
+                    onPress={() => navigation.navigate('EditRecipe', { recipeId: recipeId})}
                     accessibilityLabel="Edit recipe"
                 />
             </View>
