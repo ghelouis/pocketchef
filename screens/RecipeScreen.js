@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 
+/**
+ * Screen displaying a specific recipe
+ */
 export default function RecipeScreen({ route, navigation }) {
     const { recipeId } = route.params;
     const [title, setTitle] = useState('');
@@ -9,18 +13,11 @@ export default function RecipeScreen({ route, navigation }) {
     const [instructions, setInstructions] = useState('');
 
     const onSuccess = (tx, results) => {
-        console.log("TEST A")
-        console.log(results)
-        console.log("TEST B")
         const len = results.rows.length
         if (len < 1) {
             console.log("Error: recipe not found")
         } else {
-            console.log("TEST C")
             const recipe = results.rows.item(0)
-            console.log("TEST D")
-            console.log(recipe)
-            console.log("TEST E")
             setTitle(recipe.title)
             setIngredients(recipe.ingredients)
             setInstructions(recipe.instructions)
@@ -35,14 +32,32 @@ export default function RecipeScreen({ route, navigation }) {
     DB.getRecipe(recipeId, onSuccess, onError)
 
     return (
-        <View>
-            <Text>Recipe id: {recipeId}</Text>
-            <Text>Recipe title:</Text>
-            <Text>{title}</Text>
-            <Text>Recipe ingredients:</Text>
-            <Text>{ingredients}</Text>
-            <Text>Recipe instructions:</Text>
-            <Text>{instructions}</Text>
+        <View style={styles.main}>
+            <ScrollView>
+                <Text style={styles.header}>Title</Text>
+                <Text style={styles.details}>{title}</Text>
+                <Text style={styles.header}>Ingredients</Text>
+                <Text style={styles.details}>{ingredients}</Text>
+                <Text style={styles.header}>Instructions</Text>
+                <Text style={styles.details}>{instructions}</Text>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    name="trash"
+                    backgroundColor="red"
+                    //onPress={() => navigation.navigate('AddRecipe')}
+                    accessibilityLabel="Delete recipe"
+                />
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    name="pencil"
+                    //onPress={() => navigation.navigate('AddRecipe')}
+                    accessibilityLabel="Edit recipe"
+                />
+            </View>
         </View>
     );
 }
@@ -51,5 +66,32 @@ RecipeScreen.navigationOptions = {
   header: null,
 };
 const styles = StyleSheet.create({
+    main: {
+        flex: 1
+    },
+    header: {
+        fontSize: 22,
+        paddingTop: 10,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    details: {
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: "space-evenly",
+        marginTop: 10,
+        marginBottom: 5,
+    },
+    button: {
+        justifyContent:"center",
+        width: "60%",
+        alignSelf: "center",
+    },
+    icon: {
+        marginRight: 0
+    }
 });
 

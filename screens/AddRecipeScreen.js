@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button} from 'react-native';
+import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
 
 
+/**
+ * Screen for creating a new recipe
+ */
 export default function AddRecipeScreen({ navigation }) {
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState('');
@@ -30,30 +33,37 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     return (
-        <View>
-            <Text>Title</Text>
-            <TextInput
-                placeholder="Title"
-                onChangeText={title => setTitle(title)}
-            />
-            <Text>Ingredients</Text>
-            <TextInput
-                placeholder="Ingredients"
-                onChangeText={ingredients => setIngredients(ingredients)}
-                multiline={true}
-            />
-            <Text>Instructions</Text>
-            <TextInput
-                placeholder="Instructions"
-                onChangeText={instructions => setInstructions(instructions)}
-                multiline={true}
-            />
-            <Button
-                onPress={saveRecipe}
-                title="Save"
-                accessibilityLabel="Save"
-                disabled={!title || !ingredients || !instructions}
-            />
+        <View style={styles.main}>
+            <ScrollView>
+                <Text style={styles.header}>Title</Text>
+                <TextInput
+                    style={styles.details}
+                    placeholder="Title"
+                    onChangeText={title => setTitle(title)}
+                />
+                <Text style={styles.header}>Ingredients</Text>
+                <TextInput
+                    style={styles.details}
+                    placeholder="Ingredients"
+                    onChangeText={ingredients => setIngredients(ingredients)}
+                    multiline={true}
+                />
+                <Text style={styles.header}>Instructions</Text>
+                <TextInput
+                    style={styles.details}
+                    placeholder="Instructions"
+                    onChangeText={instructions => setInstructions(instructions)}
+                    multiline={true}
+                />
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <Button
+                    onPress={saveRecipe}
+                    title="Save"
+                    accessibilityLabel="Save"
+                    disabled={!title || !ingredients || !instructions}
+                />
+            </View>
         </View>
     );
 }
@@ -61,6 +71,27 @@ export default function AddRecipeScreen({ navigation }) {
 AddRecipeScreen.navigationOptions = {
   header: null,
 };
+
 const styles = StyleSheet.create({
+    main: {
+        flex: 1
+    },
+    header: {
+        fontSize: 22,
+        paddingTop: 10,
+        paddingLeft: 20,
+        paddingRight: 20
+    },
+    details: {
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    buttonContainer: {
+        justifyContent: "center",
+        width: "80%",
+        marginLeft: "10%",
+        marginTop: 10,
+        marginBottom: 10,
+    }
 });
 

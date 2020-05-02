@@ -3,6 +3,9 @@ import { FlatList, StyleSheet, Text, View, TouchableHighlight } from 'react-nati
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 
+/**
+ * Screen listing all recipes
+ */
 export default function RecipesScreen({ navigation }) {
 
     const [data, setData] = useState([])
@@ -42,11 +45,13 @@ export default function RecipesScreen({ navigation }) {
             />
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
+                    iconStyle={styles.icon}
                     style={styles.button}
                     name="plus"
                     onPress={() => navigation.navigate('AddRecipe')}
                     accessibilityLabel="Add recipe"
-                /></View>
+                />
+            </View>
         </View>
     );
 }
@@ -64,13 +69,16 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         justifyContent: "center",
-        width: "70%",
-        marginLeft: "15%",
+        width: "80%",
+        marginLeft: "10%",
         marginTop: 10,
         marginBottom: 10,
     },
     button: {
         justifyContent:"center"
     },
+    icon: {
+        marginRight: 0
+    }
 });
 
