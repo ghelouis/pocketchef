@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 
@@ -18,7 +18,7 @@ export default function RecipesScreen({ navigation }) {
     }
 
     const onError = (err) => {
-        console.log("onError: ", err)
+        console.log("Error retrieving recipes:", err)
         return false
     }
 
@@ -28,7 +28,17 @@ export default function RecipesScreen({ navigation }) {
         <View style={styles.main}>
             <FlatList
                 data={data}
-                renderItem={({item}) => <Text style={styles.item}>{item.title}</Text>}
+                renderItem={({item, index, separators}) => (
+                    <TouchableHighlight
+                        key={item.key}
+                        onPress={() => navigation.navigate('Recipe', { recipeId: item.key })}
+                        onShowUnderlay={separators.highlight}
+                        onHideUnderlay={separators.unhighlight}>
+                        <View style={{backgroundColor: 'white'}}>
+                            <Text style={styles.item}>{item.title}</Text>
+                        </View>
+                    </TouchableHighlight>
+                )}
             />
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button

@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecipesScreen from './screens/RecipesScreen';
 import AddRecipeScreen from './screens/AddRecipeScreen';
+import RecipeScreen from './screens/RecipeScreen';
 import DB from './database/Database'
 
 const Stack = createStackNavigator();
@@ -48,6 +49,11 @@ export default function App(props) {
                 name="AddRecipe"
                 component={AddRecipeScreen}
                 options={{ title: 'Add recipe' }}
+            />
+            <Stack.Screen
+                name="Recipe"
+                component={RecipeScreen}
+                options={{ title: 'Recipe' }}
             />
           </Stack.Navigator>
         </NavigationContainer>
