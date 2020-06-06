@@ -1,0 +1,28 @@
+
+https://material.io/design/color/the-color-system.html#color-theme-creation
+
+
+bouton suppr & edit sur le details d'une recette: faire plus discret (à la
+notes, maybe less bright colors, less space, under a horizontal ruler)
+
+
+
+# Photos Management
+- stored on the file system
+
+<recipe-uuid>
+ |
+ |-- 1.jpg // main
+ |-- 2.jpg
+ |-- ...
+
+- can be exported from an existing photo or by taking one directly
+
+
+# Ingrédients
+pas forcément de quantité / unité de mesure: e.g sel, poivre, moutarde, 3 oeufs
+attention aussi ingrédiends insécables (e.g oeufs)
+hmm... #relou
+
+# Durée
+temps total = temps de préparation + temps de cuisson

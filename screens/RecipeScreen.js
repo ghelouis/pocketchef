@@ -40,7 +40,7 @@ export default function RecipeScreen({ route, navigation }) {
 
     const onDelete = () => {
         Alert.alert('',
-            'Supprimer la recette?',
+            i18n.t('deleteRecipe'),
             [
                 {text: 'OK', onPress: () => DB.deleteRecipe(recipeId, onDeleteSuccess, onDeleteError)}
             ],
@@ -64,14 +64,15 @@ export default function RecipeScreen({ route, navigation }) {
                 <FontAwesome.Button
                     style={styles.button}
                     iconStyle={styles.icon}
+                    backgroundColor="#F44336"
                     name="trash"
-                    backgroundColor="red"
                     onPress={onDelete}
                     accessibilityLabel="Delete recipe"
                 />
                 <FontAwesome.Button
                     style={styles.button}
                     iconStyle={styles.icon}
+                    backgroundColor="#2196F3"
                     name="pencil"
                     onPress={() => navigation.navigate('EditRecipe', { recipeId: recipeId})}
                     accessibilityLabel="Edit recipe"
