@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import { SliderBox } from "react-native-image-slider-box";
 import {FontAwesome} from "@expo/vector-icons";
+import ImageView from "react-native-image-viewing";
 
 
 /**
@@ -15,13 +16,6 @@ import {FontAwesome} from "@expo/vector-icons";
 export default function AddRecipeScreen({ navigation }) {
     const [id, setId] = useState('');
     const [title, setTitle] = useState('');
-    const [ingredients, setIngredients] = useState('');
-    const [instructions, setInstructions] = useState('');
-    const [images, setImages] = useState([]);
-    useEffect(() => updateDeleteImageButtonBackgroundColor())
-    const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
-    const [currentImageIndex, setCurrentImageIndex] = useState([]);
-
     useEffect(() => {
         // waiting for this issue to be resolved: https://github.com/uuidjs/uuid/issues/375
         // (should be good enough for now - from https://stackoverflow.com/a/2117523)
@@ -31,6 +25,13 @@ export default function AddRecipeScreen({ navigation }) {
         });
         setId(id)
     }, [])
+    const [ingredients, setIngredients] = useState('');
+    const [instructions, setInstructions] = useState('');
+    const [images, setImages] = useState([]);
+    useEffect(() => updateDeleteImageButtonBackgroundColor())
+    const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
+    const [currentImageIndex, setCurrentImageIndex] = useState([]);
+    const [isImageViewerModalVisible, setIsImageViewerModalVisible] = useState(false);
 
     const getPermissionAsync = async () => {
         if (Constants.platform.ios) {
@@ -124,6 +125,7 @@ export default function AddRecipeScreen({ navigation }) {
                 images={images}
                 circleLoop={true}
                 currentImageEmitter={index => setCurrentImageIndex(index)}
+                onCurrentImagePressed={index => setCurrentImageIndex({ index }, () => { setIsImageViewerModalVisible(true) })}
             />
             <View style={styles.picButtonContainer}>
                 <FontAwesome.Button
@@ -176,6 +178,12 @@ export default function AddRecipeScreen({ navigation }) {
                     disabled={!title || !ingredients || !instructions}
                 />
             </View>
+            <ImageView
+                images={images}
+                imageIndex={currentImageIndex}
+                visible={isImageViewerModalVisible}
+                onRequestClose={() => setIsImageViewerModalVisible(false)}
+            />
         </View>
     );
 }
