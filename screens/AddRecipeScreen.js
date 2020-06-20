@@ -12,7 +12,7 @@ import ImageView from "react-native-image-viewing";
 
 
 /**
- * Screen for creating a new recipe
+ * Create a new recipe
  */
 export default function AddRecipeScreen({ navigation }) {
     const [id, setId] = useState('');
@@ -130,7 +130,6 @@ export default function AddRecipeScreen({ navigation }) {
             />
             <SliderBox
                 images={images}
-                circleLoop={true}
                 currentImageEmitter={index => setCurrentImageIndex(index)}
                 onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
             />

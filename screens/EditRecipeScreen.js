@@ -5,7 +5,7 @@ import i18n from 'i18n-js';
 
 
 /**
- * Screen for editing an existing recipe
+ * Edit an existing recipe
  */
 export default function EditRecipeScreen({ route, navigation }) {
     const { recipeId } = route.params;

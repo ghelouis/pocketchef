@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
+import FS from '../fs/FS'
 import i18n from 'i18n-js';
+import {SliderBox} from "react-native-image-slider-box";
+import ImageView from "react-native-image-viewing";
 
 /**
- * Screen displaying a specific recipe
+ * Display a recipe
  */
 export default function RecipeScreen({ route, navigation }) {
     const { recipeId } = route.params;
     const [title, setTitle] = useState('');
+    const [images, setImages] = useState([]);
+    useEffect(() => {
+        loadImages()
+    }, [])
+    const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
+
+    const loadImages = () => {
+        FS.loadMainImages(recipeId).then((res) => {
+            setImages(res.map(u => ({key: u, uri: FS.mainImagesDir(recipeId) + '/' + u})))
+        }).catch((err) => {
+            console.log("Error retrieving images for recipe " + recipeId + ": " + err)
+        })
+    }
 
     const onSuccess = (tx, results) => {
         const len = results.rows.length
@@ -26,7 +42,7 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const onError = (err) => {
-        console.log("Error retrieving recipe:", err)
+        console.log("Error retrieving recipe " + recipeId + ":", err)
         return false
     }
 
@@ -55,6 +71,10 @@ export default function RecipeScreen({ route, navigation }) {
             <ScrollView>
                 <Text style={styles.header}>{i18n.t('title')}</Text>
                 <Text style={styles.details}>{title}</Text>
+                <SliderBox
+                    images={images}
+                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
+                />
                 <Text style={styles.header}>{i18n.t('ingredients')}</Text>
                 <Text style={styles.details}>{ingredients}</Text>
                 <Text style={styles.header}>{i18n.t('instructions')}</Text>
@@ -78,6 +98,12 @@ export default function RecipeScreen({ route, navigation }) {
                     accessibilityLabel="Edit recipe"
                 />
             </View>
+            <ImageView
+                images={images}
+                imageIndex={imageViewerModalState.imgIndex}
+                visible={imageViewerModalState.isVisible}
+                onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
+            />
         </View>
     );
 }

@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 
 /**
- * Screen listing all recipes
+ * List all recipes
  */
 export default function RecipesScreen({ navigation }) {
 
