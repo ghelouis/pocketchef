@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
+import FS from '../fs/FS'
 import i18n from 'i18n-js';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -31,7 +32,7 @@ export default function AddRecipeScreen({ navigation }) {
     useEffect(() => updateDeleteImageButtonBackgroundColor())
     const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
     const [currentImageIndex, setCurrentImageIndex] = useState([]);
-    const [isImageViewerModalVisible, setIsImageViewerModalVisible] = useState(false);
+    const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
 
     const getPermissionAsync = async () => {
         if (Constants.platform.ios) {
@@ -60,7 +61,13 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const saveRecipe = () => {
-        DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe)
+        FS.saveMainImages(id, images).then(() => {
+                DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe)
+            }
+        ).catch((err) => {
+            console.log("Save images to file system error:")
+            console.log(err)
+        })
     }
 
     const pickImage = async () => {
@@ -125,7 +132,7 @@ export default function AddRecipeScreen({ navigation }) {
                 images={images}
                 circleLoop={true}
                 currentImageEmitter={index => setCurrentImageIndex(index)}
-                onCurrentImagePressed={index => setCurrentImageIndex({ index }, () => { setIsImageViewerModalVisible(true) })}
+                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
             />
             <View style={styles.picButtonContainer}>
                 <FontAwesome.Button
@@ -180,9 +187,9 @@ export default function AddRecipeScreen({ navigation }) {
             </View>
             <ImageView
                 images={images}
-                imageIndex={currentImageIndex}
-                visible={isImageViewerModalVisible}
-                onRequestClose={() => setIsImageViewerModalVisible(false)}
+                imageIndex={imageViewerModalState.imgIndex}
+                visible={imageViewerModalState.isVisible}
+                onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
             />
         </View>
     );
