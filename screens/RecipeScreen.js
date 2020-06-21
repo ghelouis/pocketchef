@@ -63,7 +63,13 @@ export default function RecipeScreen({ route, navigation }) {
         Alert.alert('',
             i18n.t('deleteRecipe'),
             [
-                {text: 'OK', onPress: () => DB.deleteRecipe(recipeId, onDeleteSuccess, onDeleteError)}
+                {
+                    text: 'OK', onPress: () => {
+                        FS.deleteAllImages(recipeId).then(() => {
+                            DB.deleteRecipe(recipeId, onDeleteSuccess, onDeleteError)
+                        })
+                    }
+                }
             ],
             {cancelable: true}
         )

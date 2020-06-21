@@ -52,6 +52,10 @@ export default class FS {
         })
     }
 
+    static deleteAllImages(recipeId) {
+        return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId)
+    }
+
     static async saveMainImages(recipeId, uris) {
         const dir = FS.mainImagesDir(recipeId)
         await(FileSystem.makeDirectoryAsync(dir, {intermediates: true}))
