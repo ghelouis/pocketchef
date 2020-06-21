@@ -69,8 +69,7 @@ export default function RecipeScreen({ route, navigation }) {
     return (
         <View style={styles.main}>
             <ScrollView>
-                <Text style={styles.header}>{i18n.t('title')}</Text>
-                <Text style={styles.details}>{title}</Text>
+                <Text style={styles.title}>{title}</Text>
                 <SliderBox
                     images={images}
                     resizeMode={'contain'}
@@ -115,6 +114,14 @@ RecipeScreen.navigationOptions = {
 const styles = StyleSheet.create({
     main: {
         flex: 1
+    },
+    title: {
+        fontSize: 28,
+        textAlign: 'center',
+        paddingTop: 10,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 10
     },
     header: {
         fontSize: 22,
