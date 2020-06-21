@@ -56,6 +56,19 @@ export default class FS {
         return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId)
     }
 
+    static async getAllImages() {
+        const dirContent = await(FileSystem.readDirectoryAsync(FileSystem.documentDirectory + 'recipes/'))
+        const promises = dirContent.map(item => {
+            return FileSystem.readDirectoryAsync(FS.mainImagesDir(item))
+        })
+        const images = await(Promise.all(promises))
+        const recipeIdToImageMap = new Map()
+        for (let i = 0; i < dirContent.length; i++) {
+            recipeIdToImageMap.set(dirContent[i], FS.mainImagesDir(dirContent[i]) + '/' + images[i][0])
+        }
+        return recipeIdToImageMap
+    }
+
     static async saveMainImages(recipeId, uris) {
         const dir = FS.mainImagesDir(recipeId)
         await(FileSystem.makeDirectoryAsync(dir, {intermediates: true}))

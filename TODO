@@ -1,6 +1,0 @@
-
-EditRecipe
-  on delete: delete images
-
-Recipes list
-  add image miniature
