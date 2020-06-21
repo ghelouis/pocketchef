@@ -73,6 +73,7 @@ export default function RecipeScreen({ route, navigation }) {
                 <Text style={styles.details}>{title}</Text>
                 <SliderBox
                     images={images}
+                    resizeMode={'contain'}
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
                 <Text style={styles.header}>{i18n.t('ingredients')}</Text>
