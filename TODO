@@ -1,11 +1,6 @@
 
-images (add/view)
-  slideshow: show full image, not cropped, with correct ratio
-
 EditRecipe
-  edit images
-  move remove button inside slideshow (index is set asynchronously)
-  make own slideshow(?) at least full screen image on click + pinch/zoom
+  on delete: delete images
 
-Recipes
+Recipes list
   add image miniature

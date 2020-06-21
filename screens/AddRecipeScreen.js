@@ -82,7 +82,7 @@ export default function AddRecipeScreen({ navigation }) {
             console.log("Pick image error:");
             console.log(E);
         }
-    };
+    }
 
     const takePicture = async () => {
         try {
@@ -96,7 +96,7 @@ export default function AddRecipeScreen({ navigation }) {
             console.log("Take picture error:");
             console.log(E);
         }
-    };
+    }
 
     const addImage = (imageURI) => {
         if (images.length === 0) {

@@ -15,6 +15,9 @@ export default function RecipeScreen({ route, navigation }) {
     const [title, setTitle] = useState('');
     const [images, setImages] = useState([]);
     useEffect(() => {
+        navigation.addListener('focus', () => {
+            loadImages();
+        });
         loadImages()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
@@ -46,6 +49,8 @@ export default function RecipeScreen({ route, navigation }) {
         return false
     }
 
+    DB.getRecipe(recipeId, onSuccess, onError)
+
     const onDeleteSuccess = () => {
         navigation.navigate('Recipes')
     }
@@ -63,8 +68,6 @@ export default function RecipeScreen({ route, navigation }) {
             {cancelable: true}
         )
     }
-
-    DB.getRecipe(recipeId, onSuccess, onError)
 
     return (
         <View style={styles.main}>
