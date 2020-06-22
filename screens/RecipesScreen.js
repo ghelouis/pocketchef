@@ -3,7 +3,6 @@ import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'rea
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 import FS from "../fs/FS";
-import {SliderBox} from "react-native-image-slider-box";
 
 /**
  * List all recipes
@@ -25,7 +24,11 @@ export default function RecipesScreen({ navigation }) {
                 let row = results.rows.item(i)
                 tmpData.push({key: row.id, title: row.title, uri: idToImg.get(row.id)})
             }
-            setData(tmpData)
+            setData(tmpData.sort((a,b) => {
+                if (a.title < b.title) return -1
+                if (a.title > b.title) return 1
+                return 0
+            }))
         }).catch((err) => {
             console.log("Error getting miniature images:", err)
         })
@@ -46,7 +49,7 @@ export default function RecipesScreen({ navigation }) {
                         onPress={() => navigation.navigate('Recipe', { recipeId: item.key })}
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
-                        <View style={{flex: 1, flexDirection: 'row', backgroundColor: 'white'}}>
+                        <View style={styles.itemContainer}>
                             <Image
                                 source={{uri: item.uri}}
                                 resizeMode={'contain'}
@@ -81,7 +84,14 @@ const styles = StyleSheet.create({
     },
     item: {
         margin: 5,
-        fontSize: 25
+        fontSize: 25,
+    },
+    itemContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderBottomColor: 'lightgrey',
+        borderBottomWidth: 1,
     },
     buttonContainer: {
         justifyContent: "center",
