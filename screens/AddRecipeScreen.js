@@ -25,6 +25,7 @@ export default function AddRecipeScreen({ navigation }) {
             return v.toString(16);
         });
         setId(id)
+        getPermissionAsync()
     }, [])
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
@@ -38,17 +39,15 @@ export default function AddRecipeScreen({ navigation }) {
         if (Constants.platform.ios) {
             const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
             if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+                alert(i18n.t('missingPermissionError'));
             }
         } else {
             const {status} = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                alert('Sorry, we need camera roll permissions to make this work!');
+                alert(i18n.t('missingPermissionError'));
             }
         }
     };
-
-    getPermissionAsync();
 
     const onSaveRecipe = () => {
         Alert.alert('',
@@ -60,9 +59,13 @@ export default function AddRecipeScreen({ navigation }) {
         )
     }
 
+    const onSaveRecipeError = (err) => {
+        console.log("Failed to save recipe " + id + "(" + title + ") with: ", err)
+    }
+
     const saveRecipe = () => {
         FS.saveMainImages(id, images).then(() => {
-                DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe)
+                DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
             console.log("Save images to file system error:")
@@ -182,7 +185,7 @@ export default function AddRecipeScreen({ navigation }) {
                     onPress={saveRecipe}
                     title={i18n.t('save')}
                     accessibilityLabel="Save"
-                    disabled={!title || !ingredients || !instructions}
+                    disabled={!title}
                 />
             </View>
             <ImageView

@@ -11,18 +11,20 @@ import ImageView from "react-native-image-viewing";
  * Display a recipe
  */
 export default function RecipeScreen({ route, navigation }) {
-    const { recipeId } = route.params;
-    const [title, setTitle] = useState('');
-    const [images, setImages] = useState([]);
+    const { recipeId } = route.params
+    const [title, setTitle] = useState('')
+    const [images, setImages] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
-            loadImages();
+            DB.getRecipe(recipeId, onSuccess, onError)
+            loadImages()
         });
+        DB.getRecipe(recipeId, onSuccess, onError)
         loadImages()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-    const [ingredients, setIngredients] = useState('');
-    const [instructions, setInstructions] = useState('');
+    const [ingredients, setIngredients] = useState('')
+    const [instructions, setInstructions] = useState('')
 
     const loadImages = () => {
         FS.loadMainImages(recipeId).then((res) => {
@@ -48,8 +50,6 @@ export default function RecipeScreen({ route, navigation }) {
         console.log("Error retrieving recipe " + recipeId + ":", err)
         return false
     }
-
-    DB.getRecipe(recipeId, onSuccess, onError)
 
     const onDeleteSuccess = () => {
         navigation.navigate('Recipes')
@@ -84,10 +84,10 @@ export default function RecipeScreen({ route, navigation }) {
                     resizeMode={'contain'}
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
-                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-                <Text style={styles.details}>{ingredients}</Text>
-                <Text style={styles.header}>{i18n.t('instructions')}</Text>
-                <Text style={styles.details}>{instructions}</Text>
+                {ingredients ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
+                {ingredients ? <Text style={styles.details}>{ingredients}</Text> : null}
+                {instructions ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
+                {instructions ? <Text style={styles.details}>{instructions}</Text> : null}
             </ScrollView>
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
@@ -114,12 +114,12 @@ export default function RecipeScreen({ route, navigation }) {
                 onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
             />
         </View>
-    );
+    )
 }
 
 RecipeScreen.navigationOptions = {
   header: null,
-};
+}
 const styles = StyleSheet.create({
     main: {
         flex: 1
@@ -156,5 +156,5 @@ const styles = StyleSheet.create({
     icon: {
         marginRight: 0
     }
-});
+})
 

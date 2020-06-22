@@ -7,6 +7,8 @@ import {SliderBox} from "react-native-image-slider-box";
 import FS from "../fs/FS";
 import * as ImagePicker from "expo-image-picker";
 import {FontAwesome} from "@expo/vector-icons";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
 
 
 /**
@@ -25,6 +27,7 @@ export default function EditRecipeScreen({ route, navigation }) {
     const [currentImageIndex, setCurrentImageIndex] = useState([]);
     useEffect(() => {
         loadImages()
+        getPermissionAsync()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
@@ -35,6 +38,20 @@ export default function EditRecipeScreen({ route, navigation }) {
             console.log("Error retrieving images for recipe " + recipeId + ": " + err)
         })
     }
+
+    const getPermissionAsync = async () => {
+        if (Constants.platform.ios) {
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
+            if (status !== 'granted') {
+                alert(i18n.t('missingPermissionError'));
+            }
+        } else {
+            const {status} = await Permissions.askAsync(Permissions.CAMERA);
+            if (status !== 'granted') {
+                alert(i18n.t('missingPermissionError'));
+            }
+        }
+    };
 
     const onSuccess = (tx, results) => {
         const len = results.rows.length
@@ -63,8 +80,8 @@ export default function EditRecipeScreen({ route, navigation }) {
         )
     }
 
-    const onUpdateError = () => {
-        console.log("Error updating recipe:", err)
+    const onUpdateError = (err) => {
+        console.log("Error updating recipe " + recipeId + "(" + title + ") with:", err)
     }
 
     const updateRecipe = () => {
@@ -72,8 +89,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                 DB.updateRecipe(recipeId, title, ingredients, instructions, onUpdate, onUpdateError)
             }
         ).catch((err) => {
-            console.log("Update recipe: failed to save images to file system:")
-            console.log(err)
+            console.log("Update recipe: failed to save images to file system:", err)
         })
     }
 
@@ -85,9 +101,8 @@ export default function EditRecipeScreen({ route, navigation }) {
             if (!result.cancelled) {
                 addImage(result.uri)
             }
-        } catch (E) {
-            console.log("Pick image error:");
-            console.log(E);
+        } catch (err) {
+            console.log("Pick image error:", err);
         }
     }
 
@@ -189,7 +204,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                     onPress={updateRecipe}
                     title={i18n.t('update')}
                     accessibilityLabel="Update"
-                    disabled={!title || !ingredients || !instructions}
+                    disabled={!title}
                 />
             </View>
             <ImageView

@@ -10,5 +10,6 @@
   "update": "Mettre à jour",
   "save": "Sauvegarder",
   "updateSuccess": "Recette mise à jour avec succès",
-  "saveSuccess": "Recette sauvegardée avec succès"
+  "saveSuccess": "Recette sauvegardée avec succès",
+  "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!"
 }
