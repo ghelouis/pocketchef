@@ -2,6 +2,7 @@
   "titre": "Title",
   "ingredients": "Ingredients",
   "instructions": "Instructions",
+  "utensils": "Utensils",
   "editRecipe": "Edit recipe",
   "deleteRecipe": "Delete recipe?",
   "recipe": "Recipe",

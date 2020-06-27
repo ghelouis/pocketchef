@@ -1,6 +1,7 @@
 
 # Run
-- yarn start
+- yarn start (which runs expo start)
+- run on android via usb: expo start --android (or press 'a' when it's running)
 
 # Publish
 - expo publish

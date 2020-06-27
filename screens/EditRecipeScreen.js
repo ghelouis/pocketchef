@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
 import DB from '../database/Database'
+import LiveList from '../components/LiveList'
 import i18n from 'i18n-js';
 import ImageView from "react-native-image-viewing";
 import {SliderBox} from "react-native-image-slider-box";
@@ -22,6 +23,7 @@ export default function EditRecipeScreen({ route, navigation }) {
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
+    const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
     const [currentImageIndex, setCurrentImageIndex] = useState([]);
@@ -80,13 +82,10 @@ export default function EditRecipeScreen({ route, navigation }) {
         )
     }
 
-    const onUpdateError = (err) => {
-        console.log("Error updating recipe " + recipeId + "(" + title + ") with:", err)
-    }
-
     const updateRecipe = () => {
+        console.log("Updating recipe with utensils: " + utensils)
         FS.updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
-                DB.updateRecipe(recipeId, title, ingredients, instructions, onUpdate, onUpdateError)
+                DB.updateRecipe(recipeId, title, ingredients, instructions, utensils, onUpdate)
             }
         ).catch((err) => {
             console.log("Update recipe: failed to save images to file system:", err)
@@ -140,6 +139,10 @@ export default function EditRecipeScreen({ route, navigation }) {
         } else {
             setDeleteImageButtonBackgroundColor('#F44336')
         }
+    }
+
+    const onUtensilsUpdate = (newUtensils) => {
+        setUtensils(newUtensils)
     }
 
     return (
@@ -197,6 +200,12 @@ export default function EditRecipeScreen({ route, navigation }) {
                     onChangeText={instructions => setInstructions(instructions)}
                     multiline={true}
                     value={instructions}
+                />
+                <Text style={styles.header}>{i18n.t('utensils')}</Text>
+                <LiveList
+                    recipeId={recipeId}
+                    loadItems={DB.getUtensils}
+                    onUpdateItems={onUtensilsUpdate}
                 />
             </ScrollView>
             <View style={styles.buttonContainer}>

@@ -22,11 +22,13 @@ i18n.fallbacks = true;
 
 const Stack = createStackNavigator();
 
-DB.init()
-
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
 
+  const onInitComplete = () => {
+    console.log("DB init successful")
+    setLoadingComplete(true);
+  }
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
@@ -36,7 +38,7 @@ export default function App(props) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
       } finally {
-        setLoadingComplete(true);
+        DB.init(onInitComplete)
         SplashScreen.hide();
       }
     }
