@@ -9,16 +9,13 @@ export default function LiveList({recipeId, loadItems, onUpdateItems}) {
     useEffect(() => loadItems(recipeId, onLoadItemsSuccess, onLoadItemsError), [])
 
     const onLoadItemsSuccess = (tx, results) => {
-        console.log("Successfully loaded items:")
         const len = results.rows.length
-        console.log("Loaded " + len + " items:")
         const tmpItems = []
         for (let i = 0; i < len; i++) {
             let row = results.rows.item(i)
             tmpItems.push({key: i.toString(), value: row.value})
         }
         tmpItems.push({key: tmpItems.length.toString(), value: ''})
-        console.log(tmpItems)
         setItems(tmpItems)
     }
 

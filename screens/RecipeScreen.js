@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
+import StaticList from '../components/StaticList'
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 import FS from '../fs/FS'
@@ -16,15 +17,16 @@ export default function RecipeScreen({ route, navigation }) {
     const [images, setImages] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
-            DB.getRecipe(recipeId, onSuccess, onError)
+            loadRecipe()
             loadImages()
         });
-        DB.getRecipe(recipeId, onSuccess, onError)
+        loadRecipe()
         loadImages()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const [ingredients, setIngredients] = useState('')
     const [instructions, setInstructions] = useState('')
+    const [utensils, setUtensils] = useState([])
 
     const loadImages = () => {
         FS.loadMainImages(recipeId).then((res) => {
@@ -34,9 +36,13 @@ export default function RecipeScreen({ route, navigation }) {
         })
     }
 
-    const onSuccess = (tx, results) => {
-        const len = results.rows.length
-        if (len < 1) {
+    const loadRecipe = () => {
+        DB.getRecipe(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
+        DB.getUtensils(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
+    }
+
+    const onLoadRecipeSuccess = (tx, results) => {
+        if (results.rows.length < 1) {
             console.log("Error: recipe not found")
         } else {
             const recipe = results.rows.item(0)
@@ -46,9 +52,23 @@ export default function RecipeScreen({ route, navigation }) {
         }
     }
 
-    const onError = (err) => {
+    const onLoadUtensilsSuccess = (tx, results) => {
+        const len = results.rows.length
+        const tmp = []
+        if (len > 0) {
+            for (let i = 0; i < len; i++) {
+                tmp.push(results.rows.item(i))
+            }
+        }
+        setUtensils(tmp)
+    }
+
+    const onLoadRecipeError = (tx, err) => {
         console.log("Error retrieving recipe " + recipeId + ":", err)
-        return false
+    }
+
+    const onLoadUtensilsError = (tx, err) => {
+        console.log("Error retrieving utensils for recipe " + recipeId + ":", err)
     }
 
     const onDeleteSuccess = () => {
@@ -88,6 +108,8 @@ export default function RecipeScreen({ route, navigation }) {
                 {ingredients ? <Text style={styles.details}>{ingredients}</Text> : null}
                 {instructions ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
                 {instructions ? <Text style={styles.details}>{instructions}</Text> : null}
+                {utensils.length > 0 ? <Text style={styles.header}>{i18n.t('utensils')}</Text> : null}
+                {utensils.length > 0 ? <StaticList items={utensils}/> : null}
             </ScrollView>
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
