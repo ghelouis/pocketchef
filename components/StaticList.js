@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     },
     item: {
         padding: 3,
-        width: "50%"
+        width: "90%"
     }
 })
