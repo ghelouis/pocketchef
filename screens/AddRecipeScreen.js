@@ -28,7 +28,7 @@ export default function AddRecipeScreen({ navigation }) {
         setId(id)
         getPermissionAsync()
     }, [])
-    const [ingredients, setIngredients] = useState('');
+    const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState('');
     const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
@@ -128,6 +128,10 @@ export default function AddRecipeScreen({ navigation }) {
         setUtensils(newUtensils)
     }
 
+    const onIngredientsUpdate = (newIngredients) => {
+        setIngredients(newIngredients)
+    }
+
     return (
         <View style={styles.main}>
             <Text style={styles.header}>{i18n.t('title')}</Text>
@@ -171,11 +175,10 @@ export default function AddRecipeScreen({ navigation }) {
             </View>
             <ScrollView>
                 <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-                <TextInput
-                    style={styles.details}
-                    placeholder={i18n.t('ingredients')}
-                    onChangeText={ingredients => setIngredients(ingredients)}
-                    multiline={true}
+                <LiveList
+                    recipeId={id}
+                    loadItems={undefined}
+                    onUpdateItems={onIngredientsUpdate}
                 />
                 <Text style={styles.header}>{i18n.t('instructions')}</Text>
                 <TextInput

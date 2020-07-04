@@ -21,7 +21,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         DB.getRecipe(recipeId, onSuccess, onError)
     }, [recipeId])
     const [title, setTitle] = useState('');
-    const [ingredients, setIngredients] = useState('');
+    const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState('');
     const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
@@ -62,7 +62,6 @@ export default function EditRecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
-            setIngredients(recipe.ingredients)
             setInstructions(recipe.instructions)
         }
     }
@@ -144,6 +143,10 @@ export default function EditRecipeScreen({ route, navigation }) {
         setUtensils(newUtensils)
     }
 
+    const onIngredientsUpdate = (newIngredients) => {
+        setIngredients(newIngredients)
+    }
+
     return (
         <View style={styles.main}>
             <ScrollView>
@@ -187,11 +190,10 @@ export default function EditRecipeScreen({ route, navigation }) {
                     />
                 </View>
                 <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-                <TextInput
-                    style={styles.details}
-                    onChangeText={ingredients => setIngredients(ingredients)}
-                    multiline={true}
-                    value={ingredients}
+                <LiveList
+                    recipeId={recipeId}
+                    loadItems={DB.getIngredients}
+                    onUpdateItems={onIngredientsUpdate}
                 />
                 <Text style={styles.header}>{i18n.t('instructions')}</Text>
                 <TextInput

@@ -5,7 +5,7 @@ export default class DB {
 
     static init(onSuccess) {
         db.transaction(tx => {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT NOT NULL, ingredients TEXT, instructions TEXT)',
+            tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT NOT NULL, instructions TEXT)',
                 [],
                 () => {
                     console.log("DB: recipes table created successfully.")
@@ -26,9 +26,21 @@ export default class DB {
                 [],
                 () => {
                     console.log("DB: utensils table created successfully.")
-                    onSuccess()
+                    DB.createIngredientsTable(onSuccess)
                 },
                 (t, err) => DB.onError("init table utensils", err))
+        })
+    }
+
+    static createIngredientsTable(onSuccess) {
+        db.transaction(tx => {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS ingredients(id TEXT PRIMARY KEY, value TEXT NOT NULL, recipe_id REFERENCES recipes(id))',
+                [],
+                () => {
+                    console.log("DB: ingredients table created successfully.")
+                    onSuccess()
+                },
+                (t, err) => DB.onError("init table ingredients", err))
         })
     }
 
@@ -40,23 +52,32 @@ export default class DB {
 
     static getRecipe(recipeId, onSuccess, onError) {
         db.transaction(tx => {
-            tx.executeSql('SELECT id, title, ingredients, instructions FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
+            tx.executeSql('SELECT id, title, instructions FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
         });
     }
 
     static saveRecipe(id, title, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError) {
         const utensilValues = utensils.map(utensil => '(?,?,?)').join(',')
         const utensilsArgs = utensils.flatMap(utensil => [DB.genUUID(), utensil, id])
+        const ingredientValues = ingredients.map(ingredient => '(?,?,?)').join(',')
+        const ingredientsArgs = ingredients.flatMap(ingredient => [DB.genUUID(), ingredient, id])
         db.transaction(tx => {
             tx.executeSql(
-                'INSERT INTO recipes(id, title, ingredients, instructions) VALUES (?,?,?,?)',
-                [id, title, ingredients, instructions]);
+                'INSERT INTO recipes(id, title, instructions) VALUES (?,?,?)',
+                [id, title, instructions]);
             tx.executeSql('DELETE FROM utensils WHERE recipe_id=?',
+                [id]
+            )
+            tx.executeSql('DELETE FROM ingredients WHERE recipe_id=?',
                 [id]
             )
             if (utensils.length !== 0) {
                 tx.executeSql('INSERT INTO utensils(id, value, recipe_id) VALUES ' + utensilValues,
                     utensilsArgs)
+            }
+            if (ingredients.length !== 0) {
+                tx.executeSql('INSERT INTO ingredients(id, value, recipe_id) VALUES ' + ingredientValues,
+                    ingredientsArgs)
             }
         }, onSaveRecipeError, onSaveRecipe);
     }
@@ -64,17 +85,26 @@ export default class DB {
     static updateRecipe(id, title, ingredients, instructions, utensils, onUpdate) {
         const utensilValues = utensils.map(utensil => '(?,?,?)').join(',')
         const utensilsArgs = utensils.flatMap(utensil => [DB.genUUID(), utensil, id])
+        const ingredientValues = ingredients.map(ingredient => '(?,?,?)').join(',')
+        const ingredientsArgs = ingredients.flatMap(ingredient => [DB.genUUID(), ingredient, id])
         db.transaction(tx => {
             tx.executeSql(
-                'UPDATE recipes SET title=?, ingredients=?, instructions=? WHERE id=?',
-                [title, ingredients, instructions, id]
+                'UPDATE recipes SET title=?, instructions=? WHERE id=?',
+                [title, instructions, id]
             )
             tx.executeSql('DELETE FROM utensils WHERE recipe_id=?',
+                [id]
+            )
+            tx.executeSql('DELETE FROM ingredients WHERE recipe_id=?',
                 [id]
             )
             if (utensils.length !== 0) {
                 tx.executeSql('INSERT INTO utensils(id, value, recipe_id) VALUES ' + utensilValues,
                     utensilsArgs)
+            }
+            if (ingredients.length !== 0) {
+                tx.executeSql('INSERT INTO ingredients(id, value, recipe_id) VALUES ' + ingredientValues,
+                    ingredientsArgs)
             }
         }, (err) => DB.onError('updating recipe ' + title + ' (' + id + ')', err), onUpdate);
     }
@@ -86,15 +116,24 @@ export default class DB {
         })
         return id
     }
+
     static deleteRecipe(recipeId, onSuccess, onError) {
         db.transaction(tx => {
-            tx.executeSql('DELETE FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
-        })
+            tx.executeSql('DELETE FROM recipes WHERE id=?', [recipeId])
+            tx.executeSql('DELETE FROM utensils WHERE id=?', [recipeId])
+            tx.executeSql('DELETE FROM ingredients WHERE id=?', [recipeId])
+        }, onError, onSuccess)
     }
 
     static getUtensils(recipeId, onSuccess, onError) {
         db.transaction(tx => {
             tx.executeSql('SELECT id, value FROM utensils WHERE recipe_id=?', [recipeId], onSuccess, onError)
+        })
+    }
+
+    static getIngredients(recipeId, onSuccess, onError) {
+        db.transaction(tx => {
+            tx.executeSql('SELECT id, value FROM ingredients WHERE recipe_id=?', [recipeId], onSuccess, onError)
         })
     }
 }

@@ -24,7 +24,7 @@ export default function RecipeScreen({ route, navigation }) {
         loadImages()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-    const [ingredients, setIngredients] = useState('')
+    const [ingredients, setIngredients] = useState([])
     const [instructions, setInstructions] = useState('')
     const [utensils, setUtensils] = useState([])
 
@@ -39,6 +39,7 @@ export default function RecipeScreen({ route, navigation }) {
     const loadRecipe = () => {
         DB.getRecipe(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
         DB.getUtensils(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
+        DB.getIngredients(recipeId, onLoadIngredientsSuccess, onLoadIngredientsError)
     }
 
     const onLoadRecipeSuccess = (tx, results) => {
@@ -47,7 +48,6 @@ export default function RecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
-            setIngredients(recipe.ingredients)
             setInstructions(recipe.instructions)
         }
     }
@@ -63,12 +63,27 @@ export default function RecipeScreen({ route, navigation }) {
         setUtensils(tmp)
     }
 
+    const onLoadIngredientsSuccess = (tx, results) => {
+        const len = results.rows.length
+        const tmp = []
+        if (len > 0) {
+            for (let i = 0; i < len; i++) {
+                tmp.push(results.rows.item(i))
+            }
+        }
+        setIngredients(tmp)
+    }
+
     const onLoadRecipeError = (tx, err) => {
         console.log("Error retrieving recipe " + recipeId + ":", err)
     }
 
     const onLoadUtensilsError = (tx, err) => {
         console.log("Error retrieving utensils for recipe " + recipeId + ":", err)
+    }
+
+    const onLoadIngredientsError = (tx, err) => {
+        console.log("Error retrieving ingredients for recipe " + recipeId + ":", err)
     }
 
     const onDeleteSuccess = () => {
@@ -104,8 +119,8 @@ export default function RecipeScreen({ route, navigation }) {
                     resizeMode={'contain'}
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
-                {ingredients ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
-                {ingredients ? <Text style={styles.details}>{ingredients}</Text> : null}
+                {ingredients.length > 0 ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
+                {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
                 {instructions ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
                 {instructions ? <Text style={styles.details}>{instructions}</Text> : null}
                 {utensils.length > 0 ? <Text style={styles.header}>{i18n.t('utensils')}</Text> : null}
