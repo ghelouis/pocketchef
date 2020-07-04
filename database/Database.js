@@ -44,13 +44,21 @@ export default class DB {
         });
     }
 
-    static saveRecipe(id, title, ingredients, instructions, onSaveRecipe, onSaveRecipeError) {
+    static saveRecipe(id, title, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError) {
+        const utensilValues = utensils.map(utensil => '(?,?,?)').join(',')
+        const utensilsArgs = utensils.flatMap(utensil => [DB.genUUID(), utensil, id])
         db.transaction(tx => {
             tx.executeSql(
                 'INSERT INTO recipes(id, title, ingredients, instructions) VALUES (?,?,?,?)',
-                [id, title, ingredients, instructions],
-                onSaveRecipe, onSaveRecipeError);
-        });
+                [id, title, ingredients, instructions]);
+            tx.executeSql('DELETE FROM utensils WHERE recipe_id=?',
+                [id]
+            )
+            if (utensils.length !== 0) {
+                tx.executeSql('INSERT INTO utensils(id, value, recipe_id) VALUES ' + utensilValues,
+                    utensilsArgs)
+            }
+        }, onSaveRecipeError, onSaveRecipe);
     }
 
     static updateRecipe(id, title, ingredients, instructions, utensils, onUpdate) {

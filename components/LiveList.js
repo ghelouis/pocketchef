@@ -5,8 +5,12 @@ import {TextInput, StyleSheet, Text, View, FlatList} from "react-native";
  * Dynamic list which allows the user to add as many items as they want
  */
 export default function LiveList({recipeId, loadItems, onUpdateItems}) {
-    const [items, setItems] = useState([]);
-    useEffect(() => loadItems(recipeId, onLoadItemsSuccess, onLoadItemsError), [])
+    const [items, setItems] = useState([{key: "0", value: ""}]);
+    useEffect(() => {
+        if (loadItems) {
+            loadItems(recipeId, onLoadItemsSuccess, onLoadItemsError)
+        }
+    }, [])
 
     const onLoadItemsSuccess = (tx, results) => {
         const len = results.rows.length

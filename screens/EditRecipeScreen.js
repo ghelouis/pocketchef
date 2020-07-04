@@ -83,7 +83,6 @@ export default function EditRecipeScreen({ route, navigation }) {
     }
 
     const updateRecipe = () => {
-        console.log("Updating recipe with utensils: " + utensils)
         FS.updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
                 DB.updateRecipe(recipeId, title, ingredients, instructions, utensils, onUpdate)
             }

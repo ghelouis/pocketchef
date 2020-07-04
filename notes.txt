@@ -1,4 +1,9 @@
 
+gestion des erreurs: popup instead of console.log?
+
+attach file?
+e.g pdf,...
+
 https://material.io/design/color/the-color-system.html#color-theme-creation
 
 

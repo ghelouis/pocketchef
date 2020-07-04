@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
+import LiveList from '../components/LiveList'
 import DB from '../database/Database'
 import FS from '../fs/FS'
 import i18n from 'i18n-js';
@@ -29,6 +30,7 @@ export default function AddRecipeScreen({ navigation }) {
     }, [])
     const [ingredients, setIngredients] = useState('');
     const [instructions, setInstructions] = useState('');
+    const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
     const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
@@ -65,11 +67,10 @@ export default function AddRecipeScreen({ navigation }) {
 
     const saveRecipe = () => {
         FS.saveMainImages(id, images).then(() => {
-                DB.saveRecipe(id, title, ingredients, instructions, onSaveRecipe, onSaveRecipeError)
+                DB.saveRecipe(id, title, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
-            console.log("Save images to file system error:")
-            console.log(err)
+            console.log("Add Recipe: Save images to file system error:", err)
         })
     }
 
@@ -121,6 +122,10 @@ export default function AddRecipeScreen({ navigation }) {
         } else {
             setDeleteImageButtonBackgroundColor('#F44336')
         }
+    }
+
+    const onUtensilsUpdate = (newUtensils) => {
+        setUtensils(newUtensils)
     }
 
     return (
@@ -178,6 +183,12 @@ export default function AddRecipeScreen({ navigation }) {
                     placeholder={i18n.t('instructions')}
                     onChangeText={instructions => setInstructions(instructions)}
                     multiline={true}
+                />
+                <Text style={styles.header}>{i18n.t('utensils')}</Text>
+                <LiveList
+                    recipeId={id}
+                    loadItems={undefined}
+                    onUpdateItems={onUtensilsUpdate}
                 />
             </ScrollView>
             <View style={styles.buttonContainer}>
