@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import StaticList from '../components/StaticList'
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
@@ -12,7 +12,7 @@ import ImageView from "react-native-image-viewing";
  * Display a recipe
  */
 export default function RecipeScreen({ route, navigation }) {
-    const { recipeId } = route.params
+    const {recipeId} = route.params
     const [title, setTitle] = useState('')
     const [images, setImages] = useState([])
     useEffect(() => {
@@ -20,12 +20,10 @@ export default function RecipeScreen({ route, navigation }) {
             loadRecipe()
             loadImages()
         });
-        loadRecipe()
-        loadImages()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const [ingredients, setIngredients] = useState([])
-    const [instructions, setInstructions] = useState('')
+    const [instructions, setInstructions] = useState([])
     const [utensils, setUtensils] = useState([])
 
     const loadImages = () => {
@@ -40,6 +38,7 @@ export default function RecipeScreen({ route, navigation }) {
         DB.getRecipe(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
         DB.getUtensils(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
         DB.getIngredients(recipeId, onLoadIngredientsSuccess, onLoadIngredientsError)
+        DB.getInstructions(recipeId, onLoadInstructionsSuccess, onLoadInstructionsError)
     }
 
     const onLoadRecipeSuccess = (tx, results) => {
@@ -48,11 +47,10 @@ export default function RecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
-            setInstructions(recipe.instructions)
         }
     }
 
-    const onLoadUtensilsSuccess = (tx, results) => {
+    const orderListResult = (results) => {
         const len = results.rows.length
         const tmp = []
         if (len > 0) {
@@ -60,18 +58,25 @@ export default function RecipeScreen({ route, navigation }) {
                 tmp.push(results.rows.item(i))
             }
         }
-        setUtensils(tmp)
+        return tmp.sort((a, b) => {
+            if (a.step < b.step) return -1
+            if (a.step > b.step) return 1
+            return 0
+        }).map(item => {
+            return {key: item.step, value: item.value}
+        })
     }
 
     const onLoadIngredientsSuccess = (tx, results) => {
-        const len = results.rows.length
-        const tmp = []
-        if (len > 0) {
-            for (let i = 0; i < len; i++) {
-                tmp.push(results.rows.item(i))
-            }
-        }
-        setIngredients(tmp)
+        setIngredients(orderListResult(results))
+    }
+
+    const onLoadInstructionsSuccess = (tx, results) => {
+        setInstructions(orderListResult(results))
+    }
+
+    const onLoadUtensilsSuccess = (tx, results) => {
+        setUtensils(orderListResult(results))
     }
 
     const onLoadRecipeError = (tx, err) => {
@@ -84,6 +89,10 @@ export default function RecipeScreen({ route, navigation }) {
 
     const onLoadIngredientsError = (tx, err) => {
         console.log("Error retrieving ingredients for recipe " + recipeId + ":", err)
+    }
+
+    const onLoadInstructionsError = (tx, err) => {
+        console.log("Error retrieving instructions for recipe " + recipeId + ":", err)
     }
 
     const onDeleteSuccess = () => {
@@ -112,20 +121,18 @@ export default function RecipeScreen({ route, navigation }) {
 
     return (
         <View style={styles.main}>
-            <ScrollView>
-                <Text style={styles.title}>{title}</Text>
-                <SliderBox
-                    images={images}
-                    resizeMode={'contain'}
-                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
-                />
-                {ingredients.length > 0 ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
-                {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
-                {instructions ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
-                {instructions ? <Text style={styles.details}>{instructions}</Text> : null}
-                {utensils.length > 0 ? <Text style={styles.header}>{i18n.t('utensils')}</Text> : null}
-                {utensils.length > 0 ? <StaticList items={utensils}/> : null}
-            </ScrollView>
+            <Text style={styles.title}>{title}</Text>
+            <SliderBox
+                images={images}
+                resizeMode={'contain'}
+                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
+            />
+            {ingredients.length > 0 ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
+            {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
+            {instructions.length > 0 ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
+            {instructions.length > 0 ? <StaticList items={instructions} ordered={true}/> : null}
+            {utensils.length > 0 ? <Text style={styles.header}>{i18n.t('utensils')}</Text> : null}
+            {utensils.length > 0 ? <StaticList items={utensils}/> : null}
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
                     style={styles.button}
@@ -140,7 +147,7 @@ export default function RecipeScreen({ route, navigation }) {
                     iconStyle={styles.icon}
                     backgroundColor="#2196F3"
                     name="pencil"
-                    onPress={() => navigation.navigate('EditRecipe', { recipeId: recipeId})}
+                    onPress={() => navigation.navigate('EditRecipe', {recipeId: recipeId})}
                     accessibilityLabel="Edit recipe"
                 />
             </View>
@@ -174,10 +181,6 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingLeft: 20,
         paddingRight: 20
-    },
-    details: {
-        paddingLeft: 20,
-        paddingRight: 20,
     },
     buttonContainer: {
         flexDirection: 'row',

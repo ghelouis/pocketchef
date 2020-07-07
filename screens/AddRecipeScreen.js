@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
+import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
 import LiveList from '../components/LiveList'
 import DB from '../database/Database'
 import FS from '../fs/FS'
@@ -29,7 +29,7 @@ export default function AddRecipeScreen({ navigation }) {
         getPermissionAsync()
     }, [])
     const [ingredients, setIngredients] = useState([]);
-    const [instructions, setInstructions] = useState('');
+    const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
@@ -124,6 +124,10 @@ export default function AddRecipeScreen({ navigation }) {
         }
     }
 
+    const onInstructionsUpdate = (newInstructions) => {
+        setInstructions(newInstructions)
+    }
+
     const onUtensilsUpdate = (newUtensils) => {
         setUtensils(newUtensils)
     }
@@ -173,27 +177,26 @@ export default function AddRecipeScreen({ navigation }) {
                     disabled={images.length < 1}
                 />
             </View>
-            <ScrollView>
-                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-                <LiveList
-                    recipeId={id}
-                    loadItems={undefined}
-                    onUpdateItems={onIngredientsUpdate}
-                />
-                <Text style={styles.header}>{i18n.t('instructions')}</Text>
-                <TextInput
-                    style={styles.details}
-                    placeholder={i18n.t('instructions')}
-                    onChangeText={instructions => setInstructions(instructions)}
-                    multiline={true}
-                />
-                <Text style={styles.header}>{i18n.t('utensils')}</Text>
-                <LiveList
-                    recipeId={id}
-                    loadItems={undefined}
-                    onUpdateItems={onUtensilsUpdate}
-                />
-            </ScrollView>
+            <Text style={styles.header}>{i18n.t('ingredients')}</Text>
+            <LiveList
+                recipeId={id}
+                loadItems={undefined}
+                onUpdateItems={onIngredientsUpdate}
+            />
+            <Text style={styles.header}>{i18n.t('instructions')}</Text>
+            <LiveList
+                recipeId={id}
+                loadItems={undefined}
+                onUpdateItems={onInstructionsUpdate}
+                multiline={true}
+                ordered={true}
+            />
+            <Text style={styles.header}>{i18n.t('utensils')}</Text>
+            <LiveList
+                recipeId={id}
+                loadItems={undefined}
+                onUpdateItems={onUtensilsUpdate}
+            />
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={saveRecipe}

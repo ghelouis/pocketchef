@@ -1,8 +1,20 @@
 
+To Fix
+------
+alignement bullet lists avec text (currently not centered...)
+better spacing
+make bullet point bold
+better design ingreds/utensils/... (+ think of upcoming additional stuff: tags etc...)
+  tabs?
+  ...
+
+
+
+
 gestion des erreurs: popup instead of console.log?
 
-attach file?
-e.g pdf,...
+attach any kind of file?
+e.g pdf,... + on click propose to open with phone eligible apps
 
 https://material.io/design/color/the-color-system.html#color-theme-creation
 

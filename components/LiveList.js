@@ -4,7 +4,7 @@ import {TextInput, StyleSheet, Text, View, FlatList} from "react-native";
 /**
  * Dynamic list which allows the user to add as many items as they want
  */
-export default function LiveList({recipeId, loadItems, onUpdateItems}) {
+export default function LiveList({recipeId, loadItems, onUpdateItems, multiline=false, ordered=false}) {
     const [items, setItems] = useState([{key: "0", value: ""}]);
     useEffect(() => {
         if (loadItems) {
@@ -17,9 +17,15 @@ export default function LiveList({recipeId, loadItems, onUpdateItems}) {
         const tmpItems = []
         for (let i = 0; i < len; i++) {
             let row = results.rows.item(i)
-            tmpItems.push({key: i.toString(), value: row.value})
+            tmpItems.push({key: row.step.toString(), value: row.value})
         }
+        tmpItems.sort((a, b) => {
+            if (a.step < b.step) return -1
+            if (a.step > b.step) return 1
+            return 0
+        })
         tmpItems.push({key: tmpItems.length.toString(), value: ''})
+        refreshParentItems(tmpItems)
         setItems(tmpItems)
     }
 
@@ -39,8 +45,19 @@ export default function LiveList({recipeId, loadItems, onUpdateItems}) {
                 j--
             }
         }
-        onUpdateItems(newItems.filter(it => it.value !== '').map(it => it.value))
+        refreshParentItems(newItems)
         setItems(newItems)
+    }
+
+    const refreshParentItems = (newItems) => {
+        onUpdateItems(newItems.filter(it => it.value !== '').map((it, index) => {return {value: it.value, step: index}}))
+    }
+
+    const getBullet = (index) => {
+        if (ordered) {
+            return index + 1 + '.'
+        }
+        return '\u2022'
     }
 
     return (
@@ -48,11 +65,12 @@ export default function LiveList({recipeId, loadItems, onUpdateItems}) {
             data={items}
             renderItem={({item, index, separators}) => (
                 <View style={styles.itemContainer} key={item.key}>
-                    <Text style={styles.bullet}>{'\u2022'}</Text>
+                    <Text style={styles.bullet}>{getBullet(index)}</Text>
                     <TextInput
                         style={styles.item}
                         value={item.value}
                         onChangeText={text => updateItems(item.key, text)}
+                        multiline={multiline}
                     />
                 </View>
             )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView} from 'react-native';
+import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
 import DB from '../database/Database'
 import LiveList from '../components/LiveList'
 import i18n from 'i18n-js';
@@ -16,13 +16,13 @@ import * as Permissions from "expo-permissions";
  * Edit an existing recipe
  */
 export default function EditRecipeScreen({ route, navigation }) {
-    const { recipeId } = route.params;
+    const {recipeId} = route.params;
     useEffect(() => {
         DB.getRecipe(recipeId, onSuccess, onError)
     }, [recipeId])
     const [title, setTitle] = useState('');
     const [ingredients, setIngredients] = useState([]);
-    const [instructions, setInstructions] = useState('');
+    const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
@@ -62,7 +62,6 @@ export default function EditRecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
-            setInstructions(recipe.instructions)
         }
     }
 
@@ -75,7 +74,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         Alert.alert('',
             i18n.t('updateSuccess'),
             [
-                {text: 'OK', onPress: () => navigation.navigate('Recipe', { recipeId: recipeId })}
+                {text: 'OK', onPress: () => navigation.navigate('Recipe', {recipeId: recipeId})}
             ],
             {cancelable: false}
         )
@@ -147,68 +146,71 @@ export default function EditRecipeScreen({ route, navigation }) {
         setIngredients(newIngredients)
     }
 
+    const onInstructionsUpdate = (newInstructions) => {
+        setInstructions(newInstructions)
+    }
+
     return (
         <View style={styles.main}>
-            <ScrollView>
-                <Text style={styles.header}>{i18n.t('title')}</Text>
-                <TextInput
-                    style={styles.details}
-                    onChangeText={t => setTitle(t)}
-                    value={title}
+            <Text style={styles.header}>{i18n.t('title')}</Text>
+            <TextInput
+                style={styles.details}
+                onChangeText={t => setTitle(t)}
+                value={title}
+            />
+            <SliderBox
+                images={images}
+                resizeMode={'contain'}
+                currentImageEmitter={index => setCurrentImageIndex(index)}
+                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
+            />
+            <View style={styles.picButtonContainer}>
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    name="image"
+                    backgroundColor="#2196F3"
+                    onPress={() => pickImage()}
+                    accessibilityLabel="Pick image"
                 />
-                <SliderBox
-                    images={images}
-                    resizeMode={'contain'}
-                    currentImageEmitter={index => setCurrentImageIndex(index)}
-                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    backgroundColor="#2196F3"
+                    name="camera"
+                    onPress={() => takePicture()}
+                    accessibilityLabel="Take a picture"
                 />
-                <View style={styles.picButtonContainer}>
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        name="image"
-                        backgroundColor="#2196F3"
-                        onPress={() => pickImage()}
-                        accessibilityLabel="Pick image"
-                    />
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        backgroundColor="#2196F3"
-                        name="camera"
-                        onPress={() => takePicture()}
-                        accessibilityLabel="Take a picture"
-                    />
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        name="trash"
-                        backgroundColor={deleteImageButtonBackgroundColor}
-                        onPress={deleteCurrentImage}
-                        accessibilityLabel="Delete current image"
-                        disabled={images.length < 1}
-                    />
-                </View>
-                <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-                <LiveList
-                    recipeId={recipeId}
-                    loadItems={DB.getIngredients}
-                    onUpdateItems={onIngredientsUpdate}
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    name="trash"
+                    backgroundColor={deleteImageButtonBackgroundColor}
+                    onPress={deleteCurrentImage}
+                    accessibilityLabel="Delete current image"
+                    disabled={images.length < 1}
                 />
-                <Text style={styles.header}>{i18n.t('instructions')}</Text>
-                <TextInput
-                    style={styles.details}
-                    onChangeText={instructions => setInstructions(instructions)}
-                    multiline={true}
-                    value={instructions}
-                />
-                <Text style={styles.header}>{i18n.t('utensils')}</Text>
-                <LiveList
-                    recipeId={recipeId}
-                    loadItems={DB.getUtensils}
-                    onUpdateItems={onUtensilsUpdate}
-                />
-            </ScrollView>
+            </View>
+            <Text style={styles.header}>{i18n.t('ingredients')}</Text>
+            <LiveList
+                recipeId={recipeId}
+                loadItems={DB.getIngredients}
+                onUpdateItems={onIngredientsUpdate}
+            />
+            <Text style={styles.header}>{i18n.t('instructions')}</Text>
+            <LiveList
+                recipeId={recipeId}
+                loadItems={DB.getInstructions}
+                onUpdateItems={onInstructionsUpdate}
+                multiline={true}
+                ordered={true}
+            />
+            <Text style={styles.header}>{i18n.t('utensils')}</Text>
+            <LiveList
+                recipeId={recipeId}
+                loadItems={DB.getUtensils}
+                onUpdateItems={onUtensilsUpdate}
+            />
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={updateRecipe}

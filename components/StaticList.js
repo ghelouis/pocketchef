@@ -2,16 +2,23 @@ import React from 'react';
 import {StyleSheet, Text, View, FlatList} from "react-native";
 
 /**
- * Fixed unordered list.
+ * Fixed ordered or unordered list.
  */
-export default function StaticList({items}) {
+export default function StaticList({items, ordered=false}) {
 
-   return (
+    const getBullet = (index) => {
+        if (ordered) {
+            return index + 1 + '.'
+        }
+        return '\u2022'
+    }
+
+    return (
         <FlatList
             data={items}
             renderItem={({item, index, separators}) => (
                 <View style={styles.itemContainer} key={item.key}>
-                    <Text style={styles.bullet}>{'\u2022'}</Text>
+                    <Text style={styles.bullet}>{getBullet(index)}</Text>
                     <Text style={styles.item}>{item.value}</Text>
                 </View>
             )}
