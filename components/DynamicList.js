@@ -4,7 +4,7 @@ import {TextInput, StyleSheet, Text, View, FlatList} from "react-native";
 /**
  * Dynamic list which allows the user to add as many items as they want
  */
-export default function LiveList({recipeId, loadItems, onUpdateItems, multiline=false, ordered=false}) {
+export default function DynamicList({recipeId, loadItems, onUpdateItems, multiline=false, ordered=false}) {
     const [items, setItems] = useState([{key: "0", value: ""}]);
     useEffect(() => {
         if (loadItems) {
@@ -36,9 +36,11 @@ export default function LiveList({recipeId, loadItems, onUpdateItems, multiline=
     const updateItems = (i, newValue) => {
         const newItems = [...items]
         newItems[i] = {key: i, value: newValue}
+        // add new item at the end if the last one is not empty
         if (newItems[newItems.length - 1].value !== '') {
             newItems.push({key: newItems.length.toString(), value: ''})
         } else {
+            // remove all trailing empty items until there is only one left
             let j = newItems.length - 1
             while (j > 0 && newItems[j].value === '' && newItems[j - 1].value === '') {
                 newItems.pop()

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
 import DB from '../database/Database'
-import LiveList from '../components/LiveList'
+import DynamicList from '../components/DynamicList'
 import i18n from 'i18n-js';
 import ImageView from "react-native-image-viewing";
 import {SliderBox} from "react-native-image-slider-box";
@@ -10,6 +10,8 @@ import * as ImagePicker from "expo-image-picker";
 import {FontAwesome} from "@expo/vector-icons";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
+import NumberPerson from "../components/NumberPerson";
+import DynamicIngredientList from "../components/DynamicIngredientList";
 
 
 /**
@@ -21,6 +23,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         DB.getRecipe(recipeId, onSuccess, onError)
     }, [recipeId])
     const [title, setTitle] = useState('');
+    const [nbPerson, setNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
@@ -82,7 +85,7 @@ export default function EditRecipeScreen({ route, navigation }) {
 
     const updateRecipe = () => {
         FS.updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
-                DB.updateRecipe(recipeId, title, ingredients, instructions, utensils, onUpdate)
+                DB.updateRecipe(recipeId, title, nbPerson, ingredients, instructions, utensils, onUpdate)
             }
         ).catch((err) => {
             console.log("Update recipe: failed to save images to file system:", err)
@@ -150,6 +153,10 @@ export default function EditRecipeScreen({ route, navigation }) {
         setInstructions(newInstructions)
     }
 
+    const onNbPersonUpdate = (newNbPerson) => {
+        setNbPerson(newNbPerson)
+    }
+
     return (
         <View style={styles.main}>
             <Text style={styles.header}>{i18n.t('title')}</Text>
@@ -191,14 +198,22 @@ export default function EditRecipeScreen({ route, navigation }) {
                     disabled={images.length < 1}
                 />
             </View>
+            <NumberPerson
+                min={1}
+                leftText={i18n.t('for')}
+                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                onUpdate={onNbPersonUpdate}
+                loadValue={DB.getNbPerson}
+                recipeId={recipeId}
+            />
             <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-            <LiveList
+            <DynamicIngredientList
                 recipeId={recipeId}
                 loadItems={DB.getIngredients}
                 onUpdateItems={onIngredientsUpdate}
             />
             <Text style={styles.header}>{i18n.t('instructions')}</Text>
-            <LiveList
+            <DynamicList
                 recipeId={recipeId}
                 loadItems={DB.getInstructions}
                 onUpdateItems={onInstructionsUpdate}
@@ -206,7 +221,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                 ordered={true}
             />
             <Text style={styles.header}>{i18n.t('utensils')}</Text>
-            <LiveList
+            <DynamicList
                 recipeId={recipeId}
                 loadItems={DB.getUtensils}
                 onUpdateItems={onUtensilsUpdate}

@@ -1,4 +1,17 @@
 
+way to browse the db to double check what is going on?
+
+ingrédients
+
+laisser un champ libre et multiplier/auto détecter les nombres/fractions...?
+  -: possibilité de fail: e.g 1/ 2 -> 2/ 4
+  +: plus de liberté
+
+avoir une liste de quantité/unité de mesure/nom ?
+  -: still possibilité de fail, bien que moindre (oeufs/... trucs insécables)
+  -: structuré: e.g de la coriandre: on s'en fout de la quantité. Bruit visuel.
+  +: structuré
+
 To Fix
 ------
 alignement bullet lists avec text (currently not centered...)
@@ -12,6 +25,11 @@ better design ingreds/utensils/... (+ think of upcoming additional stuff: tags e
 
 
 gestion des erreurs: popup instead of console.log?
+
+si ingred with no value, popup warn when saving? (instead of silently discarding)
+
+
+
 
 attach any kind of file?
 e.g pdf,... + on click propose to open with phone eligible apps

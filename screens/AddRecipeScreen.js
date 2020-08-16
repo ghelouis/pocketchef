@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
-import LiveList from '../components/LiveList'
+import DynamicList from '../components/DynamicList'
+import DynamicIngredientList from "../components/DynamicIngredientList";
+import NumberPerson from "../components/NumberPerson";
 import DB from '../database/Database'
 import FS from '../fs/FS'
 import i18n from 'i18n-js';
@@ -10,6 +12,7 @@ import Constants from 'expo-constants';
 import { SliderBox } from "react-native-image-slider-box";
 import {FontAwesome} from "@expo/vector-icons";
 import ImageView from "react-native-image-viewing";
+import Header from "../components/Header";
 
 
 /**
@@ -28,6 +31,7 @@ export default function AddRecipeScreen({ navigation }) {
         setId(id)
         getPermissionAsync()
     }, [])
+    const [nbPerson, setNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
@@ -62,12 +66,13 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const onSaveRecipeError = (err) => {
-        console.log("Failed to save recipe " + id + "(" + title + ") with: ", err)
+        console.log("Failed to save recipe " + id + " (" + title + ") with: ", err)
+        alert("Failed to save recipe " + title + " with: " + err)
     }
 
     const saveRecipe = () => {
         FS.saveMainImages(id, images).then(() => {
-                DB.saveRecipe(id, title, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError)
+                DB.saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
             console.log("Add Recipe: Save images to file system error:", err)
@@ -136,11 +141,14 @@ export default function AddRecipeScreen({ navigation }) {
         setIngredients(newIngredients)
     }
 
+    const onNbPersonUpdate = (newNbPerson) => {
+        setNbPerson(newNbPerson)
+    }
+
     return (
         <View style={styles.main}>
-            <Text style={styles.header}>{i18n.t('title')}</Text>
             <TextInput
-                style={styles.details}
+                style={styles.title}
                 placeholder={i18n.t('title')}
                 onChangeText={title => setTitle(title)}
             />
@@ -177,22 +185,26 @@ export default function AddRecipeScreen({ navigation }) {
                     disabled={images.length < 1}
                 />
             </View>
-            <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-            <LiveList
-                recipeId={id}
-                loadItems={undefined}
+            <NumberPerson
+                min={1}
+                leftText={i18n.t('for')}
+                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                onUpdate={onNbPersonUpdate}
+            />
+            <Header value={i18n.t('ingredients')}/>
+            <DynamicIngredientList
                 onUpdateItems={onIngredientsUpdate}
             />
-            <Text style={styles.header}>{i18n.t('instructions')}</Text>
-            <LiveList
+            <Header value={i18n.t('instructions')}/>
+            <DynamicList
                 recipeId={id}
                 loadItems={undefined}
                 onUpdateItems={onInstructionsUpdate}
                 multiline={true}
                 ordered={true}
             />
-            <Text style={styles.header}>{i18n.t('utensils')}</Text>
-            <LiveList
+            <Header value={i18n.t('utensils')}/>
+            <DynamicList
                 recipeId={id}
                 loadItems={undefined}
                 onUpdateItems={onUtensilsUpdate}
@@ -223,15 +235,13 @@ const styles = StyleSheet.create({
     main: {
         flex: 1
     },
-    header: {
-        fontSize: 22,
+    title: {
+        fontSize: 28,
+        textAlign: 'center',
         paddingTop: 10,
         paddingLeft: 20,
-        paddingRight: 20
-    },
-    details: {
-        paddingLeft: 20,
         paddingRight: 20,
+        paddingBottom: 10
     },
     buttonContainer: {
         justifyContent: "center",

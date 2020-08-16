@@ -7,9 +7,11 @@ import FS from '../fs/FS'
 import i18n from 'i18n-js';
 import {SliderBox} from "react-native-image-slider-box";
 import ImageView from "react-native-image-viewing";
+import Header from "../components/Header";
+import NumberPerson from "../components/NumberPerson";
 
 /**
- * Display a recipe
+ * Display a single recipe
  */
 export default function RecipeScreen({ route, navigation }) {
     const {recipeId} = route.params
@@ -22,7 +24,9 @@ export default function RecipeScreen({ route, navigation }) {
         });
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
+    const [nbPerson, setNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([])
+    const [originalIngredients, setOriginalIngredients] = useState([])
     const [instructions, setInstructions] = useState([])
     const [utensils, setUtensils] = useState([])
 
@@ -50,7 +54,7 @@ export default function RecipeScreen({ route, navigation }) {
         }
     }
 
-    const orderListResult = (results) => {
+    const orderListResult = (results, buildListItem) => {
         const len = results.rows.length
         const tmp = []
         if (len > 0) {
@@ -62,21 +66,43 @@ export default function RecipeScreen({ route, navigation }) {
             if (a.step < b.step) return -1
             if (a.step > b.step) return 1
             return 0
-        }).map(item => {
-            return {key: item.step, value: item.value}
-        })
+        }).map(buildListItem)
+    }
+
+    const buildIngredientListItem = (item) => {
+        const quantity = item.quantity ? item.quantity + ' ' : ''
+        const unit = item.unit ? item.unit + ' ' : ''
+        return {
+            key: item.step.toString(),
+            value: quantity + unit + item.value
+        }
+    }
+
+    const buildSimpleListItem = (item) => {
+        return {
+            key: item.step.toString(),
+            value: item.value
+        }
     }
 
     const onLoadIngredientsSuccess = (tx, results) => {
-        setIngredients(orderListResult(results))
+        setIngredients(orderListResult(results, buildIngredientListItem))
+        const len = results.rows.length
+        const tmp = []
+        if (len > 0) {
+            for (let i = 0; i < len; i++) {
+                tmp.push(results.rows.item(i))
+            }
+        }
+        setOriginalIngredients(tmp)
     }
 
     const onLoadInstructionsSuccess = (tx, results) => {
-        setInstructions(orderListResult(results))
+        setInstructions(orderListResult(results, buildSimpleListItem))
     }
 
     const onLoadUtensilsSuccess = (tx, results) => {
-        setUtensils(orderListResult(results))
+        setUtensils(orderListResult(results, buildSimpleListItem))
     }
 
     const onLoadRecipeError = (tx, err) => {
@@ -119,6 +145,21 @@ export default function RecipeScreen({ route, navigation }) {
         )
     }
 
+    const onNbPersonUpdate = (newNbPerson) => {
+        setNbPerson(newNbPerson)
+        updateIngredientsWithRatio(newNbPerson / nbPerson)
+    }
+
+    const updateIngredientsWithRatio = (ratio) => {
+        const newIngreds = originalIngredients.map(i => {
+            if (i.quantity) {
+                i.quantity = i.quantity * ratio
+            }
+            return i
+        })
+        setIngredients(newIngreds.map(buildIngredientListItem))
+    }
+
     return (
         <View style={styles.main}>
             <Text style={styles.title}>{title}</Text>
@@ -127,11 +168,19 @@ export default function RecipeScreen({ route, navigation }) {
                 resizeMode={'contain'}
                 onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
             />
-            {ingredients.length > 0 ? <Text style={styles.header}>{i18n.t('ingredients')}</Text> : null}
+            <NumberPerson
+                min={1}
+                leftText={i18n.t('for')}
+                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                onUpdate={onNbPersonUpdate}
+                loadValue={DB.getNbPerson}
+                recipeId={recipeId}
+            />
+            {ingredients.length > 0 ? <Header value={i18n.t('ingredients')}/> : null}
             {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
-            {instructions.length > 0 ? <Text style={styles.header}>{i18n.t('instructions')}</Text> : null}
+            {instructions.length > 0 ? <Header value={i18n.t('instructions')}/> : null}
             {instructions.length > 0 ? <StaticList items={instructions} ordered={true}/> : null}
-            {utensils.length > 0 ? <Text style={styles.header}>{i18n.t('utensils')}</Text> : null}
+            {utensils.length > 0 ? <Header value={i18n.t('utensils')}/> : null}
             {utensils.length > 0 ? <StaticList items={utensils}/> : null}
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
@@ -175,12 +224,6 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         paddingBottom: 10
-    },
-    header: {
-        fontSize: 22,
-        paddingTop: 10,
-        paddingLeft: 20,
-        paddingRight: 20
     },
     buttonContainer: {
         flexDirection: 'row',

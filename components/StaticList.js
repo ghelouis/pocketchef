@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, FlatList} from "react-native";
 
 /**
- * Fixed ordered or unordered list.
+ * Read-only bulleted or numbered list.
  */
 export default function StaticList({items, ordered=false}) {
 
@@ -27,8 +27,6 @@ export default function StaticList({items, ordered=false}) {
 }
 
 const styles = StyleSheet.create({
-    main: {
-    },
     itemContainer: {
         flexDirection: 'row',
         marginBottom: 5
