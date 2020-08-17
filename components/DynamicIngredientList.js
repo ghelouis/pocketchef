@@ -6,7 +6,7 @@ import i18n from "i18n-js";
  * Dynamic ingredient list which allows the user to add as many items as they want
  */
 export default function DynamicIngredientList({recipeId, loadItems, onUpdateItems}) {
-    const [items, setItems] = useState([{key: "0", quantity: undefined, unit: undefined, value: ""}]);
+    const [items, setItems] = useState([{key: "0", quantity: "", unit: "", value: ""}]);
     useEffect(() => {
         if (loadItems) {
             loadItems(recipeId, onLoadItemsSuccess, onLoadItemsError)
@@ -25,7 +25,7 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
             if (a.step > b.step) return 1
             return 0
         })
-        tmpItems.push({key: tmpItems.length.toString(), quantity: undefined, unit: undefined, value: ''})
+        tmpItems.push({key: tmpItems.length.toString(), quantity: '', unit: '', value: ''})
         refreshParentItems(tmpItems)
         setItems(tmpItems)
     }
@@ -53,11 +53,11 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
     }
 
     const updateItems = (newItems) => {
-        if (newItems[newItems.length - 1].value !== '') {
-            newItems.push({key: newItems.length.toString(), value: ''})
+        if (!isEmpty(newItems[newItems.length - 1])) {
+            newItems.push({key: newItems.length.toString(), quantity: '', unit: '', value: ''})
         } else {
             let j = newItems.length - 1
-            while (j > 0 && newItems[j].value === '' && newItems[j - 1].value === '') {
+            while (j > 0 && isEmpty(newItems[j]) && isEmpty(newItems[j - 1])) {
                 newItems.pop()
                 j--
             }
@@ -66,8 +66,18 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
         setItems(newItems)
     }
 
+    const isEmpty = (line) => {
+        return line.quantity === '' && line.unit === '' && line.value === ''
+    }
+
     const refreshParentItems = (newItems) => {
-        onUpdateItems(newItems.filter(it => it.value !== '').map((it, index) => {return {quantity: it.quantity, unit: it.unit, value: it.value, step: index}}))
+        onUpdateItems(newItems.filter(it => (it.quantity !== '' || it.unit !== '' || it.value !== ''))
+            .map((it, index) => {
+                return {
+                    quantity: it.quantity,
+                    unit: it.unit,
+                    value: it.value,
+                    step: index}}))
     }
 
     return (
@@ -77,19 +87,19 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
                 <View style={styles.itemContainer} key={item.key}>
                     <Text style={styles.bullet}>{'\u2022'}</Text>
                     <TextInput
-                        style={styles.item}
+                        style={styles.quantity}
                         value={item.quantity}
                         onChangeText={text => updateQuantity(item.key, text)}
                         placeholder={i18n.t('quantity')}
                     />
                     <TextInput
-                        style={styles.item}
+                        style={styles.unit}
                         value={item.unit}
                         onChangeText={text => updateUnit(item.key, text)}
                         placeholder={i18n.t('unit')}
                     />
                     <TextInput
-                        style={styles.item}
+                        style={styles.value}
                         value={item.value}
                         onChangeText={text => updateValue(item.key, text)}
                         placeholder={i18n.t('ingredient')}
@@ -103,17 +113,30 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
 const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
-        width: "30%",
         margin: 5
     },
     bullet: {
         margin: 5
     },
-    item: {
+    quantity: {
         borderWidth: 1,
         borderRadius: 3,
         padding: 3,
-        width: "70%",
-        borderColor: 'lightgrey'
+        borderColor: 'lightgrey',
+        flex: 1
+    },
+    unit: {
+        borderWidth: 1,
+        borderRadius: 3,
+        padding: 3,
+        borderColor: 'lightgrey',
+        flex: 2
+    },
+    value: {
+        borderWidth: 1,
+        borderRadius: 3,
+        padding: 3,
+        borderColor: 'lightgrey',
+        flex: 2
     }
 })

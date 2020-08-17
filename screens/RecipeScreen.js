@@ -25,6 +25,7 @@ export default function RecipeScreen({ route, navigation }) {
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const [nbPerson, setNbPerson] = useState(1);
+    const [originalNbPerson, setOriginalNbPerson] = useState(undefined);
     const [ingredients, setIngredients] = useState([])
     const [originalIngredients, setOriginalIngredients] = useState([])
     const [instructions, setInstructions] = useState([])
@@ -147,13 +148,20 @@ export default function RecipeScreen({ route, navigation }) {
 
     const onNbPersonUpdate = (newNbPerson) => {
         setNbPerson(newNbPerson)
-        updateIngredientsWithRatio(newNbPerson / nbPerson)
+        if (originalNbPerson === undefined) {
+            setOriginalNbPerson(newNbPerson)
+        } else {
+            updateIngredientsWithRatio(newNbPerson / originalNbPerson)
+        }
     }
 
     const updateIngredientsWithRatio = (ratio) => {
-        const newIngreds = originalIngredients.map(i => {
+        const newIngreds = JSON.parse(JSON.stringify(originalIngredients)).map(i => {
             if (i.quantity) {
-                i.quantity = i.quantity * ratio
+                const newQuantity = i.quantity * ratio
+                if (!isNaN(newQuantity)) {
+                    i.quantity = Number(newQuantity.toFixed(2))
+                }
             }
             return i
         })

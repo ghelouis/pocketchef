@@ -1,7 +1,18 @@
 
+ajouter un block 'free text' 'notes'
+
 way to browse the db to double check what is going on?
+  ex: how can I save a 'bbb' quantity into a REAL field :mind-blown:
+
 
 ingrédients
+-----------
+si qty incorrect number ignore on RecipePage when multiplying
+
+use case non géré: liste d'ingrédients / préparation pour 2 choses à faire pour
+cette recette: ex gâteau + glaçage, ou plat + sauce. Hmm...
+Right now kinda ok: lister ingreds à la suite, same pour la préparation
+
 
 laisser un champ libre et multiplier/auto détecter les nombres/fractions...?
   -: possibilité de fail: e.g 1/ 2 -> 2/ 4
@@ -14,6 +25,7 @@ avoir une liste de quantité/unité de mesure/nom ?
 
 To Fix
 ------
+decimal number display: in French it shows '.' as the decimal separator instead of ',' :(
 alignement bullet lists avec text (currently not centered...)
 better spacing
 make bullet point bold
@@ -25,8 +37,6 @@ better design ingreds/utensils/... (+ think of upcoming additional stuff: tags e
 
 
 gestion des erreurs: popup instead of console.log?
-
-si ingred with no value, popup warn when saving? (instead of silently discarding)
 
 
 

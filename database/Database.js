@@ -34,7 +34,7 @@ export default class DB {
 
     static createIngredientsTable(onSuccess) {
         db.transaction(tx => {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS ingredients(id TEXT PRIMARY KEY, step INTEGER NOT NULL, value TEXT NOT NULL, quantity REAL, unit TEXT, recipe_id REFERENCES recipes(id))',
+            tx.executeSql('CREATE TABLE IF NOT EXISTS ingredients(id TEXT PRIMARY KEY, step INTEGER NOT NULL, value TEXT, quantity TEXT, unit TEXT, recipe_id REFERENCES recipes(id))',
                 [],
                 () => {
                     console.log("DB: ingredients table created successfully.")
