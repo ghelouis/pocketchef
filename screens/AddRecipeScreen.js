@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
+import {TextInput, View, StyleSheet, Alert, Button, ScrollView } from 'react-native';
 import DynamicList from '../components/DynamicList'
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import NumberPerson from "../components/NumberPerson";
@@ -152,63 +152,71 @@ export default function AddRecipeScreen({ navigation }) {
                 placeholder={i18n.t('title')}
                 onChangeText={title => setTitle(title)}
             />
-            <SliderBox
-                images={images}
-                resizeMode={'contain'}
-                currentImageEmitter={index => setCurrentImageIndex(index)}
-                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
-            />
-            <View style={styles.picButtonContainer}>
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    name="image"
-                    backgroundColor="#2196F3"
-                    onPress={() => pickImage()}
-                    accessibilityLabel="Pick image"
+            <ScrollView>
+                <SliderBox
+                    images={images}
+                    resizeMode={'contain'}
+                    currentImageEmitter={index => setCurrentImageIndex(index)}
+                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    backgroundColor="#2196F3"
-                    name="camera"
-                    onPress={() => takePicture()}
-                    accessibilityLabel="Take a picture"
+                <View style={styles.picButtonContainer}>
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        name="image"
+                        backgroundColor="#2196F3"
+                        onPress={() => pickImage()}
+                        accessibilityLabel="Pick an image"
+                    />
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        backgroundColor="#2196F3"
+                        name="camera"
+                        onPress={() => takePicture()}
+                        accessibilityLabel="Take a picture"
+                    />
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        name="trash"
+                        backgroundColor={deleteImageButtonBackgroundColor}
+                        onPress={deleteCurrentImage}
+                        accessibilityLabel="Delete current image"
+                        disabled={images.length < 1}
+                    />
+                </View>
+                <NumberPerson
+                    min={1}
+                    leftText={i18n.t('for')}
+                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                    onUpdate={onNbPersonUpdate}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    name="trash"
-                    backgroundColor={deleteImageButtonBackgroundColor}
-                    onPress={deleteCurrentImage}
-                    accessibilityLabel="Delete current image"
-                    disabled={images.length < 1}
+                <Header value={i18n.t('ingredients')}/>
+                <DynamicIngredientList
+                    onUpdateItems={onIngredientsUpdate}
                 />
-            </View>
-            <NumberPerson
-                min={1}
-                leftText={i18n.t('for')}
-                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                onUpdate={onNbPersonUpdate}
-            />
-            <Header value={i18n.t('ingredients')}/>
-            <DynamicIngredientList
-                onUpdateItems={onIngredientsUpdate}
-            />
-            <Header value={i18n.t('instructions')}/>
-            <DynamicList
-                recipeId={id}
-                loadItems={undefined}
-                onUpdateItems={onInstructionsUpdate}
-                multiline={true}
-                ordered={true}
-            />
-            <Header value={i18n.t('utensils')}/>
-            <DynamicList
-                recipeId={id}
-                loadItems={undefined}
-                onUpdateItems={onUtensilsUpdate}
-            />
+                <Header value={i18n.t('instructions')}/>
+                <DynamicList
+                    recipeId={id}
+                    loadItems={undefined}
+                    onUpdateItems={onInstructionsUpdate}
+                    multiline={true}
+                    ordered={true}
+                />
+                <Header value={i18n.t('utensils')}/>
+                <DynamicList
+                    recipeId={id}
+                    loadItems={undefined}
+                    onUpdateItems={onUtensilsUpdate}
+                />
+                <ImageView
+                    images={images}
+                    imageIndex={imageViewerModalState.imgIndex}
+                    visible={imageViewerModalState.isVisible}
+                    onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
+                />
+            </ScrollView>
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={saveRecipe}
@@ -217,12 +225,6 @@ export default function AddRecipeScreen({ navigation }) {
                     disabled={!title}
                 />
             </View>
-            <ImageView
-                images={images}
-                imageIndex={imageViewerModalState.imgIndex}
-                visible={imageViewerModalState.isVisible}
-                onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
-            />
         </View>
     );
 }
@@ -265,4 +267,3 @@ const styles = StyleSheet.create({
         marginRight: 0
     }
 });
-

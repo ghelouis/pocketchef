@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View, ScrollView} from 'react-native';
 import StaticList from '../components/StaticList'
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
@@ -171,25 +171,33 @@ export default function RecipeScreen({ route, navigation }) {
     return (
         <View style={styles.main}>
             <Text style={styles.title}>{title}</Text>
-            <SliderBox
-                images={images}
-                resizeMode={'contain'}
-                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
-            />
-            <NumberPerson
-                min={1}
-                leftText={i18n.t('for')}
-                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                onUpdate={onNbPersonUpdate}
-                loadValue={DB.getNbPerson}
-                recipeId={recipeId}
-            />
-            {ingredients.length > 0 ? <Header value={i18n.t('ingredients')}/> : null}
-            {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
-            {instructions.length > 0 ? <Header value={i18n.t('instructions')}/> : null}
-            {instructions.length > 0 ? <StaticList items={instructions} ordered={true}/> : null}
-            {utensils.length > 0 ? <Header value={i18n.t('utensils')}/> : null}
-            {utensils.length > 0 ? <StaticList items={utensils}/> : null}
+            <ScrollView>
+                <SliderBox
+                    images={images}
+                    resizeMode={'contain'}
+                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
+                />
+                <NumberPerson
+                    min={1}
+                    leftText={i18n.t('for')}
+                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                    onUpdate={onNbPersonUpdate}
+                    loadValue={DB.getNbPerson}
+                    recipeId={recipeId}
+                />
+                {ingredients.length > 0 ? <Header value={i18n.t('ingredients')}/> : null}
+                {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
+                {instructions.length > 0 ? <Header value={i18n.t('instructions')}/> : null}
+                {instructions.length > 0 ? <StaticList items={instructions} ordered={true}/> : null}
+                {utensils.length > 0 ? <Header value={i18n.t('utensils')}/> : null}
+                {utensils.length > 0 ? <StaticList items={utensils}/> : null}
+                <ImageView
+                    images={images}
+                    imageIndex={imageViewerModalState.imgIndex}
+                    visible={imageViewerModalState.isVisible}
+                    onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
+                />
+            </ScrollView>
             <View style={styles.buttonContainer}>
                 <FontAwesome.Button
                     style={styles.button}
@@ -208,12 +216,6 @@ export default function RecipeScreen({ route, navigation }) {
                     accessibilityLabel="Edit recipe"
                 />
             </View>
-            <ImageView
-                images={images}
-                imageIndex={imageViewerModalState.imgIndex}
-                visible={imageViewerModalState.isVisible}
-                onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
-            />
         </View>
     )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, StyleSheet, Text, View, FlatList} from "react-native";
+import {TextInput, StyleSheet, Text, View} from "react-native";
 
 /**
  * Dynamic list which allows the user to add as many items as they want
@@ -62,10 +62,9 @@ export default function DynamicList({recipeId, loadItems, onUpdateItems, multili
         return '\u2022'
     }
 
-    return (
-        <FlatList
-            data={items}
-            renderItem={({item, index, separators}) => (
+    const renderList = () => {
+        return items.map((item, index) => {
+            return (
                 <View style={styles.itemContainer} key={item.key}>
                     <Text style={styles.bullet}>{getBullet(index)}</Text>
                     <TextInput
@@ -75,8 +74,14 @@ export default function DynamicList({recipeId, loadItems, onUpdateItems, multili
                         multiline={multiline}
                     />
                 </View>
-            )}
-        />
+            )
+        })
+    }
+
+    return (
+        <View>
+            {renderList()}
+        </View>
     )
 }
 

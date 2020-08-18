@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, FlatList} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 
 /**
  * Read-only bulleted or numbered list.
@@ -13,16 +13,21 @@ export default function StaticList({items, ordered=false}) {
         return '\u2022'
     }
 
-    return (
-        <FlatList
-            data={items}
-            renderItem={({item, index, separators}) => (
+    const renderList = () => {
+        return items.map((item, index) => {
+            return (
                 <View style={styles.itemContainer} key={item.key}>
                     <Text style={styles.bullet}>{getBullet(index)}</Text>
                     <Text style={styles.item}>{item.value}</Text>
                 </View>
-            )}
-        />
+            )
+        })
+    }
+
+    return (
+        <View>
+            {renderList()}
+        </View>
     )
 }
 

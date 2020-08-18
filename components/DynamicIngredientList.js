@@ -80,10 +80,9 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
                     step: index}}))
     }
 
-    return (
-        <FlatList
-            data={items}
-            renderItem={({item, index, separators}) => (
+    const renderList = () => {
+        return items.map((item) => {
+            return (
                 <View style={styles.itemContainer} key={item.key}>
                     <Text style={styles.bullet}>{'\u2022'}</Text>
                     <TextInput
@@ -105,8 +104,14 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
                         placeholder={i18n.t('ingredient')}
                     />
                 </View>
-            )}
-        />
+            )
+        })
+    }
+
+    return (
+        <View>
+            {renderList()}
+        </View>
     )
 }
 

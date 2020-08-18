@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button } from 'react-native';
+import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView } from 'react-native';
 import DB from '../database/Database'
 import DynamicList from '../components/DynamicList'
 import i18n from 'i18n-js';
@@ -12,6 +12,7 @@ import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
 import DynamicIngredientList from "../components/DynamicIngredientList";
+import Header from "../components/Header";
 
 
 /**
@@ -159,73 +160,81 @@ export default function EditRecipeScreen({ route, navigation }) {
 
     return (
         <View style={styles.main}>
-            <Text style={styles.header}>{i18n.t('title')}</Text>
             <TextInput
-                style={styles.details}
-                onChangeText={t => setTitle(t)}
+                style={styles.title}
+                placeholder={i18n.t('title')}
                 value={title}
+                onChangeText={title => setTitle(title)}
             />
-            <SliderBox
-                images={images}
-                resizeMode={'contain'}
-                currentImageEmitter={index => setCurrentImageIndex(index)}
-                onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
-            />
-            <View style={styles.picButtonContainer}>
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    name="image"
-                    backgroundColor="#2196F3"
-                    onPress={() => pickImage()}
-                    accessibilityLabel="Pick image"
+            <ScrollView>
+                <SliderBox
+                    images={images}
+                    resizeMode={'contain'}
+                    currentImageEmitter={index => setCurrentImageIndex(index)}
+                    onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    backgroundColor="#2196F3"
-                    name="camera"
-                    onPress={() => takePicture()}
-                    accessibilityLabel="Take a picture"
+                <View style={styles.picButtonContainer}>
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        name="image"
+                        backgroundColor="#2196F3"
+                        onPress={() => pickImage()}
+                        accessibilityLabel="Pick an image"
+                    />
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        backgroundColor="#2196F3"
+                        name="camera"
+                        onPress={() => takePicture()}
+                        accessibilityLabel="Take a picture"
+                    />
+                    <FontAwesome.Button
+                        style={styles.button}
+                        iconStyle={styles.icon}
+                        name="trash"
+                        backgroundColor={deleteImageButtonBackgroundColor}
+                        onPress={deleteCurrentImage}
+                        accessibilityLabel="Delete current image"
+                        disabled={images.length < 1}
+                    />
+                </View>
+                <NumberPerson
+                    min={1}
+                    leftText={i18n.t('for')}
+                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
+                    onUpdate={onNbPersonUpdate}
+                    loadValue={DB.getNbPerson}
+                    recipeId={recipeId}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    name="trash"
-                    backgroundColor={deleteImageButtonBackgroundColor}
-                    onPress={deleteCurrentImage}
-                    accessibilityLabel="Delete current image"
-                    disabled={images.length < 1}
+                <Header value={i18n.t('ingredients')}/>
+                <DynamicIngredientList
+                    recipeId={recipeId}
+                    loadItems={DB.getIngredients}
+                    onUpdateItems={onIngredientsUpdate}
                 />
-            </View>
-            <NumberPerson
-                min={1}
-                leftText={i18n.t('for')}
-                rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                onUpdate={onNbPersonUpdate}
-                loadValue={DB.getNbPerson}
-                recipeId={recipeId}
-            />
-            <Text style={styles.header}>{i18n.t('ingredients')}</Text>
-            <DynamicIngredientList
-                recipeId={recipeId}
-                loadItems={DB.getIngredients}
-                onUpdateItems={onIngredientsUpdate}
-            />
-            <Text style={styles.header}>{i18n.t('instructions')}</Text>
-            <DynamicList
-                recipeId={recipeId}
-                loadItems={DB.getInstructions}
-                onUpdateItems={onInstructionsUpdate}
-                multiline={true}
-                ordered={true}
-            />
-            <Text style={styles.header}>{i18n.t('utensils')}</Text>
-            <DynamicList
-                recipeId={recipeId}
-                loadItems={DB.getUtensils}
-                onUpdateItems={onUtensilsUpdate}
-            />
+                <Header value={i18n.t('instructions')}/>
+                <DynamicList
+                    recipeId={recipeId}
+                    loadItems={DB.getInstructions}
+                    onUpdateItems={onInstructionsUpdate}
+                    multiline={true}
+                    ordered={true}
+                />
+                <Header value={i18n.t('utensils')}/>
+                <DynamicList
+                    recipeId={recipeId}
+                    loadItems={DB.getUtensils}
+                    onUpdateItems={onUtensilsUpdate}
+                />
+                <ImageView
+                    images={images}
+                    imageIndex={imageViewerModalState.imgIndex}
+                    visible={imageViewerModalState.isVisible}
+                    onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
+                />
+            </ScrollView>
             <View style={styles.buttonContainer}>
                 <Button
                     onPress={updateRecipe}
@@ -234,29 +243,25 @@ export default function EditRecipeScreen({ route, navigation }) {
                     disabled={!title}
                 />
             </View>
-            <ImageView
-                images={images}
-                imageIndex={imageViewerModalState.imgIndex}
-                visible={imageViewerModalState.isVisible}
-                onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
-            />
         </View>
     );
 }
 
 EditRecipeScreen.navigationOptions = {
-  header: null,
+    header: null,
 };
 
 const styles = StyleSheet.create({
     main: {
         flex: 1
     },
-    header: {
-        fontSize: 22,
+    title: {
+        fontSize: 28,
+        textAlign: 'center',
         paddingTop: 10,
         paddingLeft: 20,
-        paddingRight: 20
+        paddingRight: 20,
+        paddingBottom: 10
     },
     details: {
         paddingLeft: 20,
