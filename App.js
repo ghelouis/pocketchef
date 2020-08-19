@@ -12,6 +12,7 @@ import * as Localization from 'expo-localization';
 import i18n from 'i18n-js';
 import frLangFile from './translations/fr.json'
 import enLangFile from './translations/en.json'
+import FS from "./fs/FS";
 
 i18n.translations = {
   en: enLangFile,
@@ -39,6 +40,7 @@ export default function App(props) {
         console.warn(e);
       } finally {
         DB.init(onInitComplete)
+        FS.createRecipesDir()
         SplashScreen.hide();
       }
     }

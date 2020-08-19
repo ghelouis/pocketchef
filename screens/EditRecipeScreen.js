@@ -28,6 +28,7 @@ export default function EditRecipeScreen({ route, navigation }) {
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
+    const [notes, setNotes] = useState('');
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
     const [currentImageIndex, setCurrentImageIndex] = useState([]);
@@ -66,6 +67,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
+            setNotes(recipe.notes)
         }
     }
 
@@ -86,7 +88,7 @@ export default function EditRecipeScreen({ route, navigation }) {
 
     const updateRecipe = () => {
         FS.updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
-                DB.updateRecipe(recipeId, title, nbPerson, ingredients, instructions, utensils, onUpdate)
+                DB.updateRecipe(recipeId, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate)
             }
         ).catch((err) => {
             console.log("Update recipe: failed to save images to file system:", err)
@@ -228,6 +230,13 @@ export default function EditRecipeScreen({ route, navigation }) {
                     loadItems={DB.getUtensils}
                     onUpdateItems={onUtensilsUpdate}
                 />
+                <Header value={'Notes'}/>
+                <TextInput
+                    value={notes}
+                    onChangeText={text => setNotes(text)}
+                    multiline={true}
+                    style={styles.notes}
+                />
                 <ImageView
                     images={images}
                     imageIndex={imageViewerModalState.imgIndex}
@@ -287,6 +296,13 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 0
+    },
+    notes: {
+        borderWidth: 1,
+        borderRadius: 3,
+        margin: 5,
+        padding: 5,
+        borderColor: 'lightgrey'
     }
 });
 

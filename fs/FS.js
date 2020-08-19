@@ -17,6 +17,12 @@ import * as FileSystem from 'expo-file-system';
  */
 export default class FS {
 
+    static createRecipesDir() {
+        FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'recipes', {intermediates: true}).then(() =>
+            console.log("FS: directory" + FileSystem.documentDirectory + 'recipes' + " created successfully.")
+        )
+    }
+
     static baseName(uri) {
         const arr = uri.split("/")
         return arr[arr.length - 1]

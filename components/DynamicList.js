@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     },
     itemContainer: {
         flexDirection: 'row',
-        marginBottom: 5
+        marginBottom: 5,
+        alignItems: 'center'
     },
     bullet: {
         margin: 5
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     item: {
         borderWidth: 1,
         borderRadius: 3,
-        padding: 3,
+        padding: 5,
         width: "70%",
         borderColor: 'lightgrey'
     }

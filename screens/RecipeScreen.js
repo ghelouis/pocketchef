@@ -30,6 +30,7 @@ export default function RecipeScreen({ route, navigation }) {
     const [originalIngredients, setOriginalIngredients] = useState([])
     const [instructions, setInstructions] = useState([])
     const [utensils, setUtensils] = useState([])
+    const [notes, setNotes] = useState('')
 
     const loadImages = () => {
         FS.loadMainImages(recipeId).then((res) => {
@@ -52,6 +53,7 @@ export default function RecipeScreen({ route, navigation }) {
         } else {
             const recipe = results.rows.item(0)
             setTitle(recipe.title)
+            setNotes(recipe.notes)
         }
     }
 
@@ -191,6 +193,8 @@ export default function RecipeScreen({ route, navigation }) {
                 {instructions.length > 0 ? <StaticList items={instructions} ordered={true}/> : null}
                 {utensils.length > 0 ? <Header value={i18n.t('utensils')}/> : null}
                 {utensils.length > 0 ? <StaticList items={utensils}/> : null}
+                {notes ? <Header value={'Notes'}/> : null}
+                {notes ? <Text style={styles.notes}>{notes}</Text> : null}
                 <ImageView
                     images={images}
                     imageIndex={imageViewerModalState.imgIndex}
@@ -248,6 +252,10 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 0
+    },
+    notes: {
+        marginLeft: 10,
+        marginRight: 10
     }
 })
 

@@ -40,13 +40,11 @@ export default function NumberPerson({min, leftText, rightText, onUpdate, loadVa
                 title={'-'}
                 onPress={decrease}
                 disabled={nbPerson < 2}
-                style={styles.button}
             />
             <Text> {nbPerson} </Text>
             <Button
                 title={'+'}
                 onPress={increase}
-                style={styles.button}
             />
             <Text style={styles.text}> {rightText}</Text>
         </View>
@@ -58,7 +56,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         margin: 5,
         alignItems: 'center'
-    },
-    button: {
     }
 })

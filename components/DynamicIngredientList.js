@@ -118,7 +118,8 @@ export default function DynamicIngredientList({recipeId, loadItems, onUpdateItem
 const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
-        margin: 5
+        margin: 5,
+        alignItems: 'center'
     },
     bullet: {
         margin: 5
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     value: {
         borderWidth: 1,
         borderRadius: 3,
-        padding: 3,
+        padding: 5,
         borderColor: 'lightgrey',
         flex: 2
     }

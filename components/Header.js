@@ -13,7 +13,9 @@ export default function Header({value}) {
 
 const styles = StyleSheet.create({
     main: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginTop: 10,
+        marginBottom: 5
     },
     leftLine: {
         backgroundColor: 'black',

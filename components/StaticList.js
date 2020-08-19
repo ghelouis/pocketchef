@@ -17,8 +17,7 @@ export default function StaticList({items, ordered=false}) {
         return items.map((item, index) => {
             return (
                 <View style={styles.itemContainer} key={item.key}>
-                    <Text style={styles.bullet}>{getBullet(index)}</Text>
-                    <Text style={styles.item}>{item.value}</Text>
+                    <Text>{getBullet(index)} {item.value}</Text>
                 </View>
             )
         })
@@ -34,13 +33,8 @@ export default function StaticList({items, ordered=false}) {
 const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
-        marginBottom: 5
-    },
-    bullet: {
-        margin: 5
-    },
-    item: {
-        padding: 3,
-        width: "90%"
+        marginBottom: 5,
+        marginLeft: 10,
+        marginRight: 10
     }
 })

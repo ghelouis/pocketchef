@@ -5,7 +5,7 @@ export default class DB {
 
     static init(onSuccess) {
         db.transaction(tx => {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT NOT NULL, nb_person INTEGER NOT NULL)',
+            tx.executeSql('CREATE TABLE IF NOT EXISTS recipes(id TEXT PRIMARY KEY, title TEXT NOT NULL, nb_person INTEGER NOT NULL, notes TEXT)',
                 [],
                 () => {
                     console.log("DB: recipes table created successfully.")
@@ -64,7 +64,7 @@ export default class DB {
 
     static getRecipe(recipeId, onSuccess, onError) {
         db.transaction(tx => {
-            tx.executeSql('SELECT id, title, nb_person FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
+            tx.executeSql('SELECT id, title, nb_person, notes FROM recipes WHERE id=?', [recipeId], onSuccess, onError)
         });
     }
 
@@ -74,7 +74,7 @@ export default class DB {
         });
     }
 
-    static saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError) {
+    static saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError) {
         const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
         const utensilsArgs = utensils.flatMap(utensil => [DB.genUUID(), utensil.step, utensil.value, id])
         const ingredientValues = ingredients.map(() => '(?,?,?,?,?,?)').join(',')
@@ -83,8 +83,8 @@ export default class DB {
         const instructionsArgs = instructions.flatMap(instruction => [DB.genUUID(), instruction.step, instruction.value, id])
         db.transaction(tx => {
             tx.executeSql(
-                'INSERT INTO recipes(id, title, nb_person) VALUES (?,?,?)',
-                [id, title, nbPerson]);
+                'INSERT INTO recipes(id, title, nb_person, notes) VALUES (?,?,?,?)',
+                [id, title, nbPerson, notes]);
             if (utensils.length > 0) {
                 tx.executeSql('INSERT INTO utensils(id, step, value, recipe_id) VALUES ' + utensilValues,
                     utensilsArgs)
@@ -100,7 +100,7 @@ export default class DB {
         }, onSaveRecipeError, onSaveRecipe);
     }
 
-    static updateRecipe(id, title, nbPerson, ingredients, instructions, utensils, onUpdate) {
+    static updateRecipe(id, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate) {
         const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
         const utensilsArgs = utensils.flatMap(utensil => [DB.genUUID(), utensil.step, utensil.value, id])
         const ingredientValues = ingredients.map(() => '(?,?,?,?,?,?)').join(',')
@@ -109,8 +109,8 @@ export default class DB {
         const instructionsArgs = instructions.flatMap(instruction => [DB.genUUID(), instruction.step, instruction.value, id])
         db.transaction(tx => {
             tx.executeSql(
-                'UPDATE recipes SET title=?, nb_person=? WHERE id=?',
-                [title, nbPerson, id]
+                'UPDATE recipes SET title=?, nb_person=?, notes=? WHERE id=?',
+                [title, nbPerson, notes, id]
             )
             tx.executeSql('DELETE FROM utensils WHERE recipe_id=?',
                 [id]

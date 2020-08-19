@@ -35,6 +35,7 @@ export default function AddRecipeScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState([]);
     const [utensils, setUtensils] = useState([]);
+    const [notes, setNotes] = useState('');
     const [images, setImages] = useState([]);
     useEffect(() => updateDeleteImageButtonBackgroundColor())
     const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
@@ -72,7 +73,7 @@ export default function AddRecipeScreen({ navigation }) {
 
     const saveRecipe = () => {
         FS.saveMainImages(id, images).then(() => {
-                DB.saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, onSaveRecipe, onSaveRecipeError)
+                DB.saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
             console.log("Add Recipe: Save images to file system error:", err)
@@ -210,6 +211,13 @@ export default function AddRecipeScreen({ navigation }) {
                     loadItems={undefined}
                     onUpdateItems={onUtensilsUpdate}
                 />
+                <Header value={'Notes'}/>
+                <TextInput
+                    value={notes}
+                    onChangeText={text => setNotes(text)}
+                    multiline={true}
+                    style={styles.notes}
+                />
                 <ImageView
                     images={images}
                     imageIndex={imageViewerModalState.imgIndex}
@@ -265,5 +273,12 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginRight: 0
+    },
+    notes: {
+        borderWidth: 1,
+        borderRadius: 3,
+        margin: 5,
+        padding: 5,
+        borderColor: 'lightgrey'
     }
 });
