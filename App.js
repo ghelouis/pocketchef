@@ -10,8 +10,8 @@ import EditRecipeScreen from './screens/EditRecipeScreen';
 import DB from './database/Database'
 import * as Localization from 'expo-localization';
 import i18n from 'i18n-js';
-import frLangFile from './translations/fr.json'
-import enLangFile from './translations/en.json'
+import frLangFile from './languages/fr.json'
+import enLangFile from './languages/en.json'
 import FS from "./fs/FS";
 
 i18n.translations = {

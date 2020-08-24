@@ -9,6 +9,7 @@ import {SliderBox} from "react-native-image-slider-box";
 import ImageView from "react-native-image-viewing";
 import Header from "../components/Header";
 import NumberPerson from "../components/NumberPerson";
+import {exportRecipe} from "../utils/export";
 
 /**
  * Display a single recipe
@@ -75,9 +76,10 @@ export default function RecipeScreen({ route, navigation }) {
     const buildIngredientListItem = (item) => {
         const quantity = item.quantity ? item.quantity + ' ' : ''
         const unit = item.unit ? item.unit + ' ' : ''
+        const value = item.value ? item.value : ''
         return {
             key: item.step.toString(),
-            value: quantity + unit + item.value
+            value: quantity + unit + value
         }
     }
 
@@ -170,6 +172,22 @@ export default function RecipeScreen({ route, navigation }) {
         setIngredients(newIngreds.map(buildIngredientListItem))
     }
 
+    const exportTheRecipe = () => {
+        const recipe = {
+            title: title,
+            nbPerson: originalNbPerson,
+            ingredients: ingredients,
+            instructions: instructions,
+            utensils: utensils,
+            notes: notes
+        }
+        exportRecipe(recipe)
+            .then((target) =>
+                Alert.alert('', i18n.t('exportSuccess') + target))
+            .catch((error) =>
+                Alert.alert('', i18n.t('exportFailure') + error))
+    }
+
     return (
         <View style={styles.main}>
             <Text style={styles.title}>{title}</Text>
@@ -203,6 +221,14 @@ export default function RecipeScreen({ route, navigation }) {
                 />
             </ScrollView>
             <View style={styles.buttonContainer}>
+                <FontAwesome.Button
+                    style={styles.button}
+                    iconStyle={styles.icon}
+                    backgroundColor="#2196F3"
+                    name="pencil"
+                    onPress={() => exportTheRecipe()}
+                    accessibilityLabel="Export recipe"
+                />
                 <FontAwesome.Button
                     style={styles.button}
                     iconStyle={styles.icon}

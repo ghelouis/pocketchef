@@ -1,29 +1,24 @@
 {
   "expo": {
-    "name": "PocketChef",
-    "slug": "PocketChef",
+    "name": "Pocket Chef",
+    "slug": "pocket-chef",
+    "description": "A recipe book in your pocket.",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
+    "scheme": "pocket-chef",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     }
   }
 }

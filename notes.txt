@@ -1,5 +1,11 @@
 
-ajouter un block 'free text' 'notes'
+re-write services (FS, DB, ...) better that classes with static methods.
+-> export functions, no need for a class
+
+design
+  RecipesScreen
+    make rows higher, pic bigger + (maybe) slightly rounded corners
+    nicer separation?
 
 way to browse the db to double check what is going on?
   ex: how can I save a 'bbb' quantity into a REAL field :mind-blown:
@@ -7,8 +13,6 @@ way to browse the db to double check what is going on?
 
 ingrédients
 -----------
-si qty incorrect number ignore on RecipePage when multiplying
-
 use case non géré: liste d'ingrédients / préparation pour 2 choses à faire pour
 cette recette: ex gâteau + glaçage, ou plat + sauce. Hmm...
 Right now kinda ok: lister ingreds à la suite, same pour la préparation
@@ -22,16 +26,6 @@ avoir une liste de quantité/unité de mesure/nom ?
   -: still possibilité de fail, bien que moindre (oeufs/... trucs insécables)
   -: structuré: e.g de la coriandre: on s'en fout de la quantité. Bruit visuel.
   +: structuré
-
-To Fix
-------
-decimal number display: in French it shows '.' as the decimal separator instead of ',' :(
-alignement bullet lists avec text (currently not centered...)
-better spacing
-make bullet point bold
-better design ingreds/utensils/... (+ think of upcoming additional stuff: tags etc...)
-  tabs?
-  ...
 
 
 
@@ -62,12 +56,6 @@ notes, maybe less bright colors, less space, under a horizontal ruler)
  |-- ...
 
 - can be exported from an existing photo or by taking one directly
-
-
-# Ingrédients
-pas forcément de quantité / unité de mesure: e.g sel, poivre, moutarde, 3 oeufs
-attention aussi ingrédiends insécables (e.g oeufs)
-hmm... #relou
 
 # Durée
 temps total = temps de préparation + temps de cuisson
