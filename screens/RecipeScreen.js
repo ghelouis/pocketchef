@@ -174,6 +174,7 @@ export default function RecipeScreen({ route, navigation }) {
 
     const exportTheRecipe = () => {
         const recipe = {
+            id: recipeId,
             title: title,
             nbPerson: originalNbPerson,
             ingredients: ingredients,
