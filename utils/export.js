@@ -9,6 +9,10 @@ const pocketChefExternalStorageMainDir = "PocketChef"
 /**
  * Manage exporting a recipe to external storage
  *
+ * Currently using a hack to create a file on external storage via MediaLibrary,
+ * waiting for expo to properly implement this.
+ * See https://expo.canny.io/feature-requests/p/ability-to-save-files-on-internal-storage
+ *
  * Exporting a recipe creates the following directory structure at the root of the device:
  * PocketChef
  * |-- <Recipe Title> // if the recipe has images
@@ -19,11 +23,11 @@ const pocketChefExternalStorageMainDir = "PocketChef"
  *         |-- ...
  * |-- <Recipe Title>.md // if the recipe has no images
  *
+ * By default (on Android at least) a new file with a trailing _n is created if a file
+ * with the same name already exists.
+ * As deletion doesn't work well with MediaLibrary we keep it as is for now.
  */
 
-// hack to create a file on external storage via MediaLibrary
-// waiting for expo to properly implement this,
-// see https://expo.canny.io/feature-requests/p/ability-to-save-files-on-internal-storage
 export async function exportRecipe(recipe) {
     await getCameraPermissions()
     const images = await FS.loadMainImages(recipe.id)
@@ -39,10 +43,11 @@ export async function exportRecipe(recipe) {
     } else {
         // Some images. Create <Recipe Title> directory with <Recipe Title>.md and images directory
         const targetDir = pocketChefExternalStorageMainDir + "/" + recipe.title
+        const imagesTargetDir = targetDir + '/images'
         await createFileInExternalStorage(tmpFile, targetDir)
         await Promise.all(images.map(image => {
             const imageFullPath = FS.mainImagesDir(recipe.id) + '/' + image
-            createFileInExternalStorage(imageFullPath, targetDir + '/images')
+            createFileInExternalStorage(imageFullPath, imagesTargetDir)
         }))
         return targetDir
     }
@@ -50,8 +55,8 @@ export async function exportRecipe(recipe) {
 
 async function createFileInExternalStorage(file, targetDir) {
     const asset = await MediaLibrary.createAssetAsync(file)
-    await MediaLibrary.createAlbumAsync(targetDir, asset)
-    // asset.filename can differ from recipe.title,
+    await MediaLibrary.createAlbumAsync(targetDir, asset, false)
+    // asset.filename might differ from recipe.title,
     // e.g it will auto-increment to recipe.title_n.md if the file is already present
     return targetDir + '/' + asset.filename
 }
@@ -89,13 +94,4 @@ function getIngredientRow(ingredient) {
 
 function getListMd(list) {
     return `${list.map(i => '-' + ' ' + i.value).join('\n')}`
-}
-
-function getNotesMd(notes) {
-    if (notes) {
-        return `
-        ## Notes
-        ${notes}`
-    }
-    return ''
 }
