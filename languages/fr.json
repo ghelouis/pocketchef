@@ -20,5 +20,10 @@
   "saveSuccess": "Recette sauvegardée avec succès",
   "exportSuccess": "Recette exportée avec succès vers: ",
   "exportFailure": "Échec de l'export: ",
-  "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!"
+  "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
+  "export": "Exporter",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "new": "Nouvelle recette",
+  "cancel": "Annuler"
 }

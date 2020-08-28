@@ -13,6 +13,7 @@ import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import Header from "../components/Header";
+import TextButton from "../components/TextButton";
 
 
 /**
@@ -244,11 +245,15 @@ export default function EditRecipeScreen({ route, navigation }) {
                     onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
                 />
             </ScrollView>
-            <View style={styles.buttonContainer}>
-                <Button
-                    onPress={updateRecipe}
+            <View style={styles.bottomButtons}>
+                <TextButton
+                    title={i18n.t('cancel')}
+                    onPress={() => navigation.navigate('Recipe', {recipeId: recipeId})}
+                    color='#FF6961'
+                />
+                <TextButton
                     title={i18n.t('update')}
-                    accessibilityLabel="Update"
+                    onPress={updateRecipe}
                     disabled={!title}
                 />
             </View>
@@ -272,17 +277,6 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingBottom: 10
     },
-    details: {
-        paddingLeft: 20,
-        paddingRight: 20,
-    },
-    buttonContainer: {
-        justifyContent: "center",
-        width: "80%",
-        marginLeft: "10%",
-        marginTop: 10,
-        marginBottom: 10,
-    },
     picButtonContainer: {
         flexDirection: 'row',
         justifyContent: "space-evenly",
@@ -303,6 +297,9 @@ const styles = StyleSheet.create({
         margin: 5,
         padding: 5,
         borderColor: 'lightgrey'
+    },
+    bottomButtons: {
+        flexDirection: 'row',
+        justifyContent: "space-evenly"
     }
 });
-

@@ -3,6 +3,8 @@ import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'rea
 import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 import FS from "../fs/FS";
+import i18n from "i18n-js";
+import TextButton from "../components/TextButton";
 
 /**
  * List all recipes
@@ -24,7 +26,7 @@ export default function RecipesScreen({ navigation }) {
                 let row = results.rows.item(i)
                 tmpData.push({key: row.id, title: row.title, uri: idToImg.get(row.id)})
             }
-            setData(tmpData.sort((a,b) => {
+            setData(tmpData.sort((a, b) => {
                 if (a.title < b.title) return -1
                 if (a.title > b.title) return 1
                 return 0
@@ -46,7 +48,7 @@ export default function RecipesScreen({ navigation }) {
                 renderItem={({item, index, separators}) => (
                     <TouchableHighlight
                         key={item.key}
-                        onPress={() => navigation.navigate('Recipe', { recipeId: item.key })}
+                        onPress={() => navigation.navigate('Recipe', {recipeId: item.key})}
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
                         <View style={styles.itemContainer}>
@@ -62,15 +64,10 @@ export default function RecipesScreen({ navigation }) {
                     </TouchableHighlight>
                 )}
             />
-            <View style={styles.buttonContainer}>
-                <FontAwesome.Button
-                    iconStyle={styles.icon}
-                    style={styles.button}
-                    name="plus"
-                    onPress={() => navigation.navigate('AddRecipe')}
-                    accessibilityLabel="Add recipe"
-                />
-            </View>
+            <TextButton
+                title={i18n.t('new')}
+                onPress={() => navigation.navigate('AddRecipe')}
+            />
         </View>
     );
 }
@@ -92,19 +89,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomColor: 'lightgrey',
         borderBottomWidth: 1,
-    },
-    buttonContainer: {
-        justifyContent: "center",
-        width: "80%",
-        marginLeft: "10%",
-        marginTop: 10,
-        marginBottom: 10,
-    },
-    button: {
-        justifyContent:"center"
-    },
-    icon: {
-        marginRight: 0
     }
 });
 

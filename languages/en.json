@@ -20,5 +20,10 @@
   "saveSuccess": "Recipe saved successfully",
   "exportSuccess": "Recipe successfully exported to: ",
   "exportFailure": "Export failed: ",
-  "missingPermissionError": "Sorry, the camera roll permission is needed to make this work!"
+  "missingPermissionError": "Sorry, the camera roll permission is needed to make this work!",
+  "export": "Export",
+  "delete": "Delete",
+  "edit": "Edit,",
+  "new": "New recipe",
+  "cancel": "Cancel"
 }

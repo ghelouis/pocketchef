@@ -13,6 +13,7 @@ import { SliderBox } from "react-native-image-slider-box";
 import {FontAwesome} from "@expo/vector-icons";
 import ImageView from "react-native-image-viewing";
 import Header from "../components/Header";
+import TextButton from "../components/TextButton";
 
 
 /**
@@ -225,11 +226,15 @@ export default function AddRecipeScreen({ navigation }) {
                     onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
                 />
             </ScrollView>
-            <View style={styles.buttonContainer}>
-                <Button
-                    onPress={saveRecipe}
+            <View style={styles.bottomButtons}>
+                <TextButton
+                    title={i18n.t('cancel')}
+                    onPress={() => navigation.navigate('Recipes')}
+                    color='#FF6961'
+                />
+                <TextButton
                     title={i18n.t('save')}
-                    accessibilityLabel="Save"
+                    onPress={saveRecipe}
                     disabled={!title}
                 />
             </View>
@@ -253,13 +258,6 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingBottom: 10
     },
-    buttonContainer: {
-        justifyContent: "center",
-        width: "80%",
-        marginLeft: "10%",
-        marginTop: 10,
-        marginBottom: 10,
-    },
     picButtonContainer: {
         flexDirection: 'row',
         justifyContent: "space-evenly",
@@ -280,5 +278,9 @@ const styles = StyleSheet.create({
         margin: 5,
         padding: 5,
         borderColor: 'lightgrey'
+    },
+    bottomButtons: {
+        flexDirection: 'row',
+        justifyContent: "space-evenly"
     }
 });

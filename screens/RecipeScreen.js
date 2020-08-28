@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Alert, StyleSheet, Text, View, ScrollView} from 'react-native';
 import StaticList from '../components/StaticList'
-import { FontAwesome } from '@expo/vector-icons';
 import DB from '../database/Database'
 import FS from '../fs/FS'
 import i18n from 'i18n-js';
@@ -10,6 +9,7 @@ import ImageView from "react-native-image-viewing";
 import Header from "../components/Header";
 import NumberPerson from "../components/NumberPerson";
 import {exportRecipe} from "../utils/export";
+import IconButton from "../components/IconButton";
 
 /**
  * Display a single recipe
@@ -222,29 +222,20 @@ export default function RecipeScreen({ route, navigation }) {
                 />
             </ScrollView>
             <View style={styles.buttonContainer}>
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    backgroundColor="#2196F3"
-                    name="pencil"
+                <IconButton
+                    name={i18n.t('export')}
                     onPress={() => exportTheRecipe()}
-                    accessibilityLabel="Export recipe"
+                    icon={"download"}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    backgroundColor="#F44336"
-                    name="trash"
+                <IconButton
+                    name={i18n.t('delete')}
                     onPress={onDelete}
-                    accessibilityLabel="Delete recipe"
+                    icon={"trash"}
                 />
-                <FontAwesome.Button
-                    style={styles.button}
-                    iconStyle={styles.icon}
-                    backgroundColor="#2196F3"
-                    name="pencil"
+                <IconButton
+                    name={i18n.t('edit')}
                     onPress={() => navigation.navigate('EditRecipe', {recipeId: recipeId})}
-                    accessibilityLabel="Edit recipe"
+                    icon={"pencil"}
                 />
             </View>
         </View>
@@ -261,24 +252,15 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         textAlign: 'center',
-        paddingTop: 10,
         paddingLeft: 20,
         paddingRight: 20,
-        paddingBottom: 10
+        paddingBottom: 5
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: "space-evenly",
         marginTop: 10,
         marginBottom: 5,
-    },
-    button: {
-        justifyContent:"center",
-        width: "60%",
-        alignSelf: "center",
-    },
-    icon: {
-        marginRight: 0
     },
     notes: {
         marginLeft: 10,
