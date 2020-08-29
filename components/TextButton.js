@@ -1,22 +1,32 @@
 import React from 'react';
-import {StyleSheet, Button, View} from "react-native";
+import {StyleSheet, View, TouchableOpacity, Text} from "react-native";
 
-export default function TextButton({title, onPress, disabled = false, color = undefined}) {
+export default function TextButton({title, onPress, disabled = false}) {
     return (
-        <View style={styles.buttonContainer}>
-            <Button
-                title={title}
-                onPress={onPress}
-                disabled={disabled}
-                color={color}
-            />
-        </View>
+        <TouchableOpacity
+            onPress={onPress}
+            disabled={disabled}
+            style={styles.buttonContainer}>
+            <View>
+                <Text style={disabled ? styles.textDisabled : styles.text}>{title}</Text>
+            </View>
+        </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
     buttonContainer: {
-        marginTop: 10,
-        marginBottom: 10,
+        paddingTop: 10,
+        paddingBottom: 10
+    },
+    text: {
+        color: 'blue',
+        textAlign: 'center',
+        fontSize: 18
+    },
+    textDisabled: {
+        color: 'grey',
+        textAlign: 'center',
+        fontSize: 18
     }
 })

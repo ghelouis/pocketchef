@@ -1,4 +1,3 @@
-
 MediaLibrary aussi ça dégomme la gallerie... pfff... *sigh*.
 Bon. P'têt voir si une lib qui fait ça proprement existe? Hmm...
 Ou bien bouton "share"/"open in app" qui ouvre le md avec say un explorateur de

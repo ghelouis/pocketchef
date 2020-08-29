@@ -13,6 +13,7 @@ import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import Header from "../components/Header";
+import TextButtonDuo from "../components/TextButtonDuo";
 import TextButton from "../components/TextButton";
 
 
@@ -81,7 +82,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         Alert.alert('',
             i18n.t('updateSuccess'),
             [
-                {text: 'OK', onPress: () => navigation.navigate('Recipe', {recipeId: recipeId})}
+                {text: 'OK', onPress: () => navigation.navigate('Recipe', {title: title, recipeId: recipeId})}
             ],
             {cancelable: false}
         )
@@ -245,18 +246,12 @@ export default function EditRecipeScreen({ route, navigation }) {
                     onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
                 />
             </ScrollView>
-            <View style={styles.bottomButtons}>
-                <TextButton
-                    title={i18n.t('cancel')}
-                    onPress={() => navigation.navigate('Recipe', {recipeId: recipeId})}
-                    color='#FF6961'
-                />
-                <TextButton
-                    title={i18n.t('update')}
-                    onPress={updateRecipe}
-                    disabled={!title}
-                />
-            </View>
+            <TextButtonDuo
+                title={i18n.t('update')}
+                onActionPress={updateRecipe}
+                onCancelPress={() => navigation.navigate('Recipe', {recipeId: recipeId})}
+                actionDisabled={!title}
+            />
         </View>
     );
 }
@@ -297,9 +292,5 @@ const styles = StyleSheet.create({
         margin: 5,
         padding: 5,
         borderColor: 'lightgrey'
-    },
-    bottomButtons: {
-        flexDirection: 'row',
-        justifyContent: "space-evenly"
     }
 });

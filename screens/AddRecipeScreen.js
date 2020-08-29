@@ -14,6 +14,7 @@ import {FontAwesome} from "@expo/vector-icons";
 import ImageView from "react-native-image-viewing";
 import Header from "../components/Header";
 import TextButton from "../components/TextButton";
+import TextButtonDuo from "../components/TextButtonDuo";
 
 
 /**
@@ -226,18 +227,12 @@ export default function AddRecipeScreen({ navigation }) {
                     onRequestClose={() => setImageViewerModalState({imgIndex: 0, isVisible: false})}
                 />
             </ScrollView>
-            <View style={styles.bottomButtons}>
-                <TextButton
-                    title={i18n.t('cancel')}
-                    onPress={() => navigation.navigate('Recipes')}
-                    color='#FF6961'
-                />
-                <TextButton
-                    title={i18n.t('save')}
-                    onPress={saveRecipe}
-                    disabled={!title}
-                />
-            </View>
+            <TextButtonDuo
+                title={i18n.t('save')}
+                onActionPress={saveRecipe}
+                onCancelPress={() => navigation.navigate('Recipes')}
+                actionDisabled={!title}
+            />
         </View>
     );
 }
@@ -278,9 +273,5 @@ const styles = StyleSheet.create({
         margin: 5,
         padding: 5,
         borderColor: 'lightgrey'
-    },
-    bottomButtons: {
-        flexDirection: 'row',
-        justifyContent: "space-evenly"
     }
 });

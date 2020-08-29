@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 5,
-        paddingBottom: 5,
         borderRadius: 3
     },
     icon: {
