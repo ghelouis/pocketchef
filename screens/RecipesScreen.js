@@ -48,7 +48,7 @@ export default function RecipesScreen({ navigation }) {
                 renderItem={({item, index, separators}) => (
                     <TouchableHighlight
                         key={item.key}
-                        onPress={() => navigation.navigate('Recipe', {recipeId: item.key})}
+                        onPress={() => navigation.navigate('Recipe', {title: item.title, recipeId: item.key})}
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
                         <View style={styles.itemContainer}>
@@ -57,7 +57,8 @@ export default function RecipesScreen({ navigation }) {
                                 resizeMode={'contain'}
                                 style={styles.image}
                             />
-                            <View style={index === data.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
+                            <View
+                                style={index === data.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
                                 <Text style={styles.item}>{item.title}</Text>
                             </View>
                         </View>

@@ -69,7 +69,6 @@ export default function App(props) {
             <Stack.Screen
                 name="Recipe"
                 component={RecipeScreen}
-                options={{ title: i18n.t('recipe') }}
             />
             <Stack.Screen
                 name="EditRecipe"

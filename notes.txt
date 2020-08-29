@@ -1,11 +1,20 @@
 
+MediaLibrary aussi ça dégomme la gallerie... pfff... *sigh*.
+Bon. P'têt voir si une lib qui fait ça proprement existe? Hmm...
+Ou bien bouton "share"/"open in app" qui ouvre le md avec say un explorateur de
+fichier et permet de save? navigate to dir, click ok, it exports here?
+
+
+améliorer les perfs: 1 requête SQL instead of many, voir filer les données
+depuis la page d'avant sans re-requêter la DB?
+
+
+
+popup de confirmation quand supprimer (see suppr photo on phone)
+
 re-write services (FS, DB, ...) better that classes with static methods.
 -> export functions, no need for a class
 
-design
-  RecipesScreen
-    make rows higher, pic bigger + (maybe) slightly rounded corners
-    nicer separation?
 
 way to browse the db to double check what is going on?
   ex: how can I save a 'bbb' quantity into a REAL field :mind-blown:

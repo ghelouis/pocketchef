@@ -15,8 +15,8 @@ import IconButton from "../components/IconButton";
  * Display a single recipe
  */
 export default function RecipeScreen({ route, navigation }) {
-    const {recipeId} = route.params
-    const [title, setTitle] = useState('')
+    const {title, recipeId} = route.params
+    navigation.setOptions({title: title})
     const [images, setImages] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
@@ -53,7 +53,6 @@ export default function RecipeScreen({ route, navigation }) {
             console.log("Error: recipe not found")
         } else {
             const recipe = results.rows.item(0)
-            setTitle(recipe.title)
             setNotes(recipe.notes)
         }
     }
@@ -191,9 +190,9 @@ export default function RecipeScreen({ route, navigation }) {
 
     return (
         <View style={styles.main}>
-            <Text style={styles.title}>{title}</Text>
             <ScrollView>
                 <SliderBox
+                    style={styles.sliderBox}
                     images={images}
                     resizeMode={'contain'}
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
@@ -213,7 +212,7 @@ export default function RecipeScreen({ route, navigation }) {
                 {utensils.length > 0 ? <Header value={i18n.t('utensils')}/> : null}
                 {utensils.length > 0 ? <StaticList items={utensils}/> : null}
                 {notes ? <Header value={'Notes'}/> : null}
-                {notes ? <Text style={styles.notes}>{notes}</Text> : null}
+                {notes ? <Text>{notes}</Text> : null}
                 <ImageView
                     images={images}
                     imageIndex={imageViewerModalState.imgIndex}
@@ -242,29 +241,16 @@ export default function RecipeScreen({ route, navigation }) {
     )
 }
 
-RecipeScreen.navigationOptions = {
-  header: null,
-}
 const styles = StyleSheet.create({
     main: {
-        flex: 1
+        flex: 1,
+        margin: 10
     },
-    title: {
-        fontSize: 28,
-        textAlign: 'center',
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingBottom: 5
+    sliderBox: {
+        height:150
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: "space-evenly",
-        marginTop: 10,
-        marginBottom: 5,
-    },
-    notes: {
-        marginLeft: 10,
-        marginRight: 10
+        justifyContent: "space-evenly"
     }
 })
-
