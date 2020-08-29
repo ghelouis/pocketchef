@@ -55,9 +55,9 @@ export default function RecipesScreen({ navigation }) {
                             <Image
                                 source={{uri: item.uri}}
                                 resizeMode={'contain'}
-                                style={{width: 40, height: 40, margin: 5}}
+                                style={styles.image}
                             />
-                            <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'white'}}>
+                            <View style={index === data.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
                                 <Text style={styles.item}>{item.title}</Text>
                             </View>
                         </View>
@@ -79,16 +79,36 @@ const styles = StyleSheet.create({
     main: {
         flex: 1
     },
-    item: {
-        margin: 5,
-        fontSize: 25,
-    },
     itemContainer: {
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: 'white',
-        borderBottomColor: 'lightgrey',
-        borderBottomWidth: 1,
+        alignItems: 'center',
+        backgroundColor: 'white'
+    },
+    image: {
+        width: 50,
+        height: 50,
+        margin: 5,
+        borderRadius: 3
+    },
+    item: {
+        fontSize: 20
+    },
+    itemWrapper: {
+        height: '100%',
+        margin: 10,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
+    itemWrapperWithBottomBorder: {
+        borderBottomColor: 'gainsboro',
+        borderBottomWidth: 0.5,
+        height: '100%',
+        margin: 10,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center'
     }
 });
 
