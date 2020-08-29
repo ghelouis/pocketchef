@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     value: {
         borderWidth: 1,
         borderRadius: 3,
-        padding: 5,
+        padding: 3,
         borderColor: 'lightgrey',
         flex: 2
     }
