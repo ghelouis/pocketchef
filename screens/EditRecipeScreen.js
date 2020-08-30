@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, Button, ScrollView } from 'react-native';
+import {TextInput, View, StyleSheet, Text, Alert, ScrollView } from 'react-native';
 import DB from '../database/Database'
 import DynamicList from '../components/DynamicList'
 import i18n from 'i18n-js';
@@ -7,14 +7,13 @@ import ImageView from "react-native-image-viewing";
 import {SliderBox} from "react-native-image-slider-box";
 import FS from "../fs/FS";
 import * as ImagePicker from "expo-image-picker";
-import {FontAwesome} from "@expo/vector-icons";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import Header from "../components/Header";
 import TextButtonDuo from "../components/TextButtonDuo";
-import TextButton from "../components/TextButton";
+import PhotoButtons from "../components/PhotoButtons";
 
 
 /**
@@ -177,33 +176,12 @@ export default function EditRecipeScreen({ route, navigation }) {
                     currentImageEmitter={index => setCurrentImageIndex(index)}
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
-                <View style={styles.picButtonContainer}>
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        name="image"
-                        backgroundColor="#2196F3"
-                        onPress={() => pickImage()}
-                        accessibilityLabel="Pick an image"
-                    />
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        backgroundColor="#2196F3"
-                        name="camera"
-                        onPress={() => takePicture()}
-                        accessibilityLabel="Take a picture"
-                    />
-                    <FontAwesome.Button
-                        style={styles.button}
-                        iconStyle={styles.icon}
-                        name="trash"
-                        backgroundColor={deleteImageButtonBackgroundColor}
-                        onPress={deleteCurrentImage}
-                        accessibilityLabel="Delete current image"
-                        disabled={images.length < 1}
-                    />
-                </View>
+                <PhotoButtons
+                    onPickImagePress={pickImage}
+                    onTakePicturePress={takePicture}
+                    onDeleteCurrentImagePress={deleteCurrentImage}
+                    deleteCurrentImageDisabled={images.length < 1}
+                />
                 <NumberPerson
                     min={1}
                     leftText={i18n.t('for')}
@@ -271,17 +249,6 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         paddingBottom: 10
-    },
-    picButtonContainer: {
-        flexDirection: 'row',
-        justifyContent: "space-evenly",
-        marginTop: 10,
-        marginBottom: 5,
-    },
-    button: {
-        justifyContent:"center",
-        width: "50%",
-        alignSelf: "center",
     },
     icon: {
         marginRight: 0

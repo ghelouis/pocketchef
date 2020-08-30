@@ -24,5 +24,8 @@
   "delete": "Supprimer",
   "edit": "Modifier",
   "new": "Nouvelle recette",
-  "cancel": "Annuler"
+  "cancel": "Annuler",
+  "pickImage": "Galerie",
+  "takePicture": "Prendre une photo",
+  "deleteCurrentImage": "Supprimer"
 }

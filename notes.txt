@@ -9,8 +9,6 @@ depuis la page d'avant sans re-requêter la DB?
 
 
 
-popup de confirmation quand supprimer (see suppr photo on phone)
-
 re-write services (FS, DB, ...) better that classes with static methods.
 -> export functions, no need for a class
 
