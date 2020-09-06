@@ -2,35 +2,55 @@ import i18n from 'i18n-js';
 import * as MediaLibrary from 'expo-media-library';
 import {getCameraPermissions} from "./permissions";
 import * as FileSystem from 'expo-file-system';
-import FS from "../fs/FS";
+import * as Sharing from 'expo-sharing';
+import {loadMainImages, mainImagesDir} from "./images";
+//import { zip, unzip, unzipAssets, subscribe } from 'react-native-zip-archive'
 
 const pocketChefExternalStorageMainDir = "PocketChef"
 
 /**
  * Manage exporting a recipe to external storage
- *
- * Currently using a hack to create a file on external storage via MediaLibrary,
- * waiting for expo to properly implement this.
- * See https://expo.canny.io/feature-requests/p/ability-to-save-files-on-internal-storage
- *
- * Exporting a recipe creates the following directory structure at the root of the device:
- * PocketChef
- * |-- <Recipe Title> // if the recipe has images
- *     |-- <Recipe Title>.md
- *     |-- Images
- *         |-- <img1>.jpg
- *         |-- <img2>.jpg
- *         |-- ...
- * |-- <Recipe Title>.md // if the recipe has no images
- *
- * By default (on Android at least) a new file with a trailing _n is created if a file
- * with the same name already exists.
- * As deletion doesn't work well with MediaLibrary we keep it as is for now.
  */
 
 export async function exportRecipe(recipe) {
+    const images = await loadMainImages(recipe.id)
+    if (images.length > 0) {
+        await exportAsZip(recipe)
+    } else {
+        await exportAsFile(recipe)
+    }
+}
+
+async function exportAsFile(recipe) {
+    const md = recipeToMarkdown(recipe)
+    const fileName = recipe.title + ".md"
+    const tmpDir = FileSystem.cacheDirectory + '/recipe-' + recipe.id
+    await FileSystem.makeDirectoryAsync(tmpDir, {intermediates: true})
+    const tmpFile = tmpDir + '/' + fileName
+    await FileSystem.writeAsStringAsync(tmpFile, md)
+    const a = await Sharing.shareAsync(tmpFile)
+    console.log(a)
+}
+
+async function exportAsZip(recipe) {
+    const md = recipeToMarkdown(recipe)
+    const fileName = recipe.title + ".md"
+    const imagesDir = mainImagesDir(recipe.id)
+    const tmpDir = FileSystem.cacheDirectory + '/recipe-' + recipe.id
+    await FileSystem.makeDirectoryAsync(tmpDir, {intermediates: true})
+    const tmpFile = tmpDir + '/' + fileName
+    await FileSystem.writeAsStringAsync(tmpFile, md)
+    await FileSystem.copyAsync({from: imagesDir, to: tmpDir + '/images'})
+    // zip: removed - not working
+    // const zipTarget = FS.cacheDirectory + '/' + recipe.title + ".zip"
+    // instead export files directly (working)
+    // dir (?) e.g file name like 'images/toto.jpg'?
+    await Sharing.shareAsync(tmpDir)
+}
+
+export async function exportRecipeOld(recipe) {
     await getCameraPermissions()
-    const images = await FS.loadMainImages(recipe.id)
+    const images = await loadMainImages(recipe.id)
     const md = recipeToMarkdown(recipe)
     const fileName = recipe.title + ".md"
     const tmpDir = FileSystem.cacheDirectory + 'recipe-' + recipe.id
@@ -46,7 +66,7 @@ export async function exportRecipe(recipe) {
         const imagesTargetDir = targetDir + '/images'
         await createFileInExternalStorage(tmpFile, targetDir)
         await Promise.all(images.map(image => {
-            const imageFullPath = FS.mainImagesDir(recipe.id) + '/' + image
+            const imageFullPath = mainImagesDir(recipe.id) + '/' + image
             createFileInExternalStorage(imageFullPath, imagesTargetDir)
         }))
         return targetDir

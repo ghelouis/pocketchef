@@ -1,65 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, View, StyleSheet, Text, Alert, ScrollView } from 'react-native';
-import DB from '../database/Database'
+import {TextInput, View, StyleSheet, Alert, ScrollView } from 'react-native';
 import DynamicList from '../components/DynamicList'
 import i18n from 'i18n-js';
 import ImageView from "react-native-image-viewing";
 import {SliderBox} from "react-native-image-slider-box";
-import FS from "../fs/FS";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import Header from "../components/Header";
 import TextButtonDuo from "../components/TextButtonDuo";
 import PhotoButtons from "../components/PhotoButtons";
+import Constants from "expo-constants";
+import {
+    getIngredientsFromDB,
+    getInstructionsFromDB,
+    getNbPersonFromDB,
+    getRecipeFromDB,
+    getUtensilsFromDB,
+    updateRecipeInDB
+} from "../utils/database";
+import {loadMainImages, mainImagesDir, updateMainImages} from "../utils/images";
 
 
 /**
  * Edit an existing recipe
  */
 export default function EditRecipeScreen({ route, navigation }) {
-    const {recipeId} = route.params;
+    const {recipeId} = route.params
     useEffect(() => {
-        DB.getRecipe(recipeId, onSuccess, onError)
+        getRecipeFromDB(recipeId, onSuccess, onError)
     }, [recipeId])
-    const [title, setTitle] = useState('');
-    const [nbPerson, setNbPerson] = useState(1);
-    const [ingredients, setIngredients] = useState([]);
-    const [instructions, setInstructions] = useState([]);
-    const [utensils, setUtensils] = useState([]);
-    const [notes, setNotes] = useState('');
-    const [images, setImages] = useState([]);
-    useEffect(() => updateDeleteImageButtonBackgroundColor())
-    const [currentImageIndex, setCurrentImageIndex] = useState([]);
+    const [title, setTitle] = useState('')
+    const [nbPerson, setNbPerson] = useState(1)
+    const [ingredients, setIngredients] = useState([])
+    const [instructions, setInstructions] = useState([])
+    const [utensils, setUtensils] = useState([])
+    const [notes, setNotes] = useState('')
+    const [images, setImages] = useState([])
+    const [currentImageIndex, setCurrentImageIndex] = useState([])
     useEffect(() => {
         loadImages()
-        getPermissionAsync()
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-    const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
     const loadImages = () => {
-        FS.loadMainImages(recipeId).then((res) => {
-            setImages(res.map(u => ({key: u, uri: FS.mainImagesDir(recipeId) + '/' + u})))
+        loadMainImages(recipeId).then((res) => {
+            setImages(res.map(u => ({key: u, uri: mainImagesDir(recipeId) + '/' + u})))
         }).catch((err) => {
             console.log("Error retrieving images for recipe " + recipeId + ": " + err)
         })
     }
-
-    const getPermissionAsync = async () => {
-        if (Constants.platform.ios) {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
-            if (status !== 'granted') {
-                alert(i18n.t('missingPermissionError'));
-            }
-        } else {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA);
-            if (status !== 'granted') {
-                alert(i18n.t('missingPermissionError'));
-            }
-        }
-    };
 
     const onSuccess = (tx, results) => {
         const len = results.rows.length
@@ -88,8 +78,8 @@ export default function EditRecipeScreen({ route, navigation }) {
     }
 
     const updateRecipe = () => {
-        FS.updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
-                DB.updateRecipe(recipeId, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate)
+        updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
+                updateRecipeInDB(recipeId, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate)
             }
         ).catch((err) => {
             console.log("Update recipe: failed to save images to file system:", err)
@@ -97,29 +87,52 @@ export default function EditRecipeScreen({ route, navigation }) {
     }
 
     const pickImage = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images
-            });
-            if (!result.cancelled) {
-                addImage(result.uri)
+        if (Constants.platform.ios) {
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+            if (status !== 'granted') {
+                alert(i18n.t('missingPermissionError'))
+            } else {
+                await pickTheImage()
             }
-        } catch (err) {
-            console.log("Pick image error:", err);
+        } else {
+            await pickTheImage()
         }
     }
 
-    const takePicture = async () => {
+    const pickTheImage = async () => {
         try {
-            let result = await ImagePicker.launchCameraAsync({
+            let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images
-            });
+            })
             if (!result.cancelled) {
                 addImage(result.uri)
             }
         } catch (E) {
-            console.log("Take picture error:");
-            console.log(E);
+            console.log("Pick image error:")
+            console.log(E)
+        }
+    }
+
+    const takePicture = async () => {
+        const {status} = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL)
+        if (status !== 'granted') {
+            alert(i18n.t('missingPermissionError'))
+        } else {
+            await takeThePicture()
+        }
+    }
+
+    const takeThePicture = async () => {
+        try {
+            let result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images
+            })
+            if (!result.cancelled) {
+                addImage(result.uri)
+            }
+        } catch (E) {
+            console.log("Take picture error:")
+            console.log(E)
         }
     }
 
@@ -135,14 +148,6 @@ export default function EditRecipeScreen({ route, navigation }) {
         const newImageArray = [...images]
         newImageArray.splice(currentImageIndex, 1)
         setImages(newImageArray)
-    }
-
-    const updateDeleteImageButtonBackgroundColor = () => {
-        if (images.length === 0) {
-            setDeleteImageButtonBackgroundColor('#DFDFDF')
-        } else {
-            setDeleteImageButtonBackgroundColor('#F44336')
-        }
     }
 
     const onUtensilsUpdate = (newUtensils) => {
@@ -187,19 +192,19 @@ export default function EditRecipeScreen({ route, navigation }) {
                     leftText={i18n.t('for')}
                     rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
                     onUpdate={onNbPersonUpdate}
-                    loadValue={DB.getNbPerson}
+                    loadValue={getNbPersonFromDB}
                     recipeId={recipeId}
                 />
                 <Header value={i18n.t('ingredients')}/>
                 <DynamicIngredientList
                     recipeId={recipeId}
-                    loadItems={DB.getIngredients}
+                    loadItems={getIngredientsFromDB}
                     onUpdateItems={onIngredientsUpdate}
                 />
                 <Header value={i18n.t('instructions')}/>
                 <DynamicList
                     recipeId={recipeId}
-                    loadItems={DB.getInstructions}
+                    loadItems={getInstructionsFromDB}
                     onUpdateItems={onInstructionsUpdate}
                     multiline={true}
                     ordered={true}
@@ -207,7 +212,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                 <Header value={i18n.t('utensils')}/>
                 <DynamicList
                     recipeId={recipeId}
-                    loadItems={DB.getUtensils}
+                    loadItems={getUtensilsFromDB}
                     onUpdateItems={onUtensilsUpdate}
                 />
                 <Header value={'Notes'}/>
@@ -231,12 +236,8 @@ export default function EditRecipeScreen({ route, navigation }) {
                 actionDisabled={!title}
             />
         </View>
-    );
+    )
 }
-
-EditRecipeScreen.navigationOptions = {
-    header: null,
-};
 
 const styles = StyleSheet.create({
     main: {
@@ -260,4 +261,4 @@ const styles = StyleSheet.create({
         padding: 5,
         borderColor: 'lightgrey'
     }
-});
+})

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {TextInput, StyleSheet, Text, View, FlatList} from "react-native";
+import {TextInput, StyleSheet, Text, View} from "react-native";
 import i18n from "i18n-js";
 
 /**

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import DB from '../database/Database'
-import FS from "../fs/FS";
 import i18n from "i18n-js";
 import TextButton from "../components/TextButton";
+import {getRecipesFromDB} from "../utils/database";
+import {getAllImages} from "../utils/images";
 
 /**
  * List all recipes
@@ -13,13 +12,13 @@ export default function RecipesScreen({ navigation }) {
     const [data, setData] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
-            DB.getRecipes(onSuccess, onError);
+            getRecipesFromDB(onSuccess, onError);
         });
-        DB.getRecipes(onSuccess, onError)
+        getRecipesFromDB(onSuccess, onError)
     }, [])
 
     const onSuccess = (tx, results) => {
-        FS.getAllImages().then((idToImg) => {
+        getAllImages().then((idToImg) => {
             const tmpData = []
             const len = results.rows.length
             for (let i = 0; i < len; i++) {
@@ -73,9 +72,6 @@ export default function RecipesScreen({ navigation }) {
     );
 }
 
-RecipesScreen.navigationOptions = {
-  header: null,
-};
 const styles = StyleSheet.create({
     main: {
         flex: 1

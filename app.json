@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Pocket Chef",
-    "slug": "pocket-chef",
-    "description": "A recipe book in your pocket.",
+    "slug": "PocketChef",
+    "description": "All your recipes in your pocket.",
     "platforms": [
       "ios",
       "android"

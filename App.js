@@ -7,12 +7,12 @@ import RecipesScreen from './screens/RecipesScreen';
 import AddRecipeScreen from './screens/AddRecipeScreen';
 import RecipeScreen from './screens/RecipeScreen';
 import EditRecipeScreen from './screens/EditRecipeScreen';
-import DB from './database/Database'
 import * as Localization from 'expo-localization';
 import i18n from 'i18n-js';
 import frLangFile from './languages/fr.json'
 import enLangFile from './languages/en.json'
-import FS from "./fs/FS";
+import {initDB} from "./utils/database";
+import {createRecipesDir} from "./utils/images";
 
 i18n.translations = {
   en: enLangFile,
@@ -28,6 +28,8 @@ export default function App(props) {
 
   const onInitComplete = () => {
     console.log("DB init successful")
+    createRecipesDir()
+    SplashScreen.hide();
     setLoadingComplete(true);
   }
   // Load any resources or data that we need prior to rendering the app
@@ -39,9 +41,7 @@ export default function App(props) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
       } finally {
-        DB.init(onInitComplete)
-        FS.createRecipesDir()
-        SplashScreen.hide();
+        initDB(onInitComplete)
       }
     }
 

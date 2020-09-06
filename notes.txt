@@ -1,16 +1,47 @@
-MediaLibrary aussi ça dégomme la gallerie... pfff... *sigh*.
-Bon. P'têt voir si une lib qui fait ça proprement existe? Hmm...
-Ou bien bouton "share"/"open in app" qui ouvre le md avec say un explorateur de
-fichier et permet de save? navigate to dir, click ok, it exports here?
+Export
+------
+en pause, pas de soluce satisfaisante avec expo pur pour le moment :/
+https://expo.canny.io/feature-requests/p/ability-to-save-files-on-internal-storage
+
+pistes étudiées:
+  expo MediaLibrary:
+    fonctionne pour créer des fichiers/dossiers mais plutôt fait pour de la
+    musique/images: créé les objects dans la galerie...
+    - l'utilisateur ne peut pas choisir le dossier cible...
+    - le bazar quand sauvegarde multiple: duplique les fichiers existants avec
+    _n, aucun contrôle là-dessus
+  expo Sharing:
+    beautifully simple, one liner to export a file and prompt the user for an
+    app able to handle it.
+    Go! Coupled with .zip maker should be fine, now? :)
+  raw react access to external storage? https://github.com/itinance/react-native-fs
+
+
+
+
+
+
+WIP
+===
+
+le nb de personnes ne se met pas à jour qd modif + go back (but ok in db)
 
 
 améliorer les perfs: 1 requête SQL instead of many, voir filer les données
 depuis la page d'avant sans re-requêter la DB?
 
 
+refacto++:  add/export recipe now that you know how :)
 
-re-write services (FS, DB, ...) better that classes with static methods.
--> export functions, no need for a class
+move to TS :D
+
+
+
+
+
+
+
+
 
 
 way to browse the db to double check what is going on?
@@ -45,10 +76,6 @@ attach any kind of file?
 e.g pdf,... + on click propose to open with phone eligible apps
 
 https://material.io/design/color/the-color-system.html#color-theme-creation
-
-
-bouton suppr & edit sur le details d'une recette: faire plus discret (à la
-notes, maybe less bright colors, less space, under a horizontal ruler)
 
 
 

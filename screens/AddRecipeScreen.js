@@ -3,8 +3,6 @@ import {TextInput, View, StyleSheet, Alert, ScrollView } from 'react-native';
 import DynamicList from '../components/DynamicList'
 import DynamicIngredientList from "../components/DynamicIngredientList";
 import NumberPerson from "../components/NumberPerson";
-import DB from '../database/Database'
-import FS from '../fs/FS'
 import i18n from 'i18n-js';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -14,6 +12,8 @@ import ImageView from "react-native-image-viewing";
 import Header from "../components/Header";
 import TextButtonDuo from "../components/TextButtonDuo";
 import PhotoButtons from "../components/PhotoButtons";
+import {saveMainImages} from "../utils/images";
+import {saveRecipeToDB} from "../utils/database";
 
 
 /**
@@ -30,7 +30,6 @@ export default function AddRecipeScreen({ navigation }) {
             return v.toString(16);
         });
         setId(id)
-        getPermissionAsync()
     }, [])
     const [nbPerson, setNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([]);
@@ -38,24 +37,8 @@ export default function AddRecipeScreen({ navigation }) {
     const [utensils, setUtensils] = useState([]);
     const [notes, setNotes] = useState('');
     const [images, setImages] = useState([]);
-    useEffect(() => updateDeleteImageButtonBackgroundColor())
-    const [deleteImageButtonBackgroundColor, setDeleteImageButtonBackgroundColor] = useState('#DFDFDF');
     const [currentImageIndex, setCurrentImageIndex] = useState([]);
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-
-    const getPermissionAsync = async () => {
-        if (Constants.platform.ios) {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL, Permissions.CAMERA);
-            if (status !== 'granted') {
-                alert(i18n.t('missingPermissionError'));
-            }
-        } else {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA);
-            if (status !== 'granted') {
-                alert(i18n.t('missingPermissionError'));
-            }
-        }
-    };
 
     const onSaveRecipe = () => {
         Alert.alert('',
@@ -73,8 +56,8 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const saveRecipe = () => {
-        FS.saveMainImages(id, images).then(() => {
-                DB.saveRecipe(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError)
+        saveMainImages(id, images).then(() => {
+                saveRecipeToDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
             console.log("Add Recipe: Save images to file system error:", err)
@@ -82,6 +65,19 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const pickImage = async () => {
+        if (Constants.platform.ios) {
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                alert(i18n.t('missingPermissionError'));
+            } else {
+                await pickTheImage()
+            }
+        } else {
+            await pickTheImage()
+        }
+    }
+
+    const pickTheImage = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images
@@ -96,6 +92,15 @@ export default function AddRecipeScreen({ navigation }) {
     }
 
     const takePicture = async () => {
+        const {status} = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+            alert(i18n.t('missingPermissionError'));
+        } else {
+            await takeThePicture()
+        }
+    }
+
+    const takeThePicture = async () => {
         try {
             let result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images
@@ -121,14 +126,6 @@ export default function AddRecipeScreen({ navigation }) {
         const newImageArray = [...images]
         newImageArray.splice(currentImageIndex, 1)
         setImages(newImageArray)
-    }
-
-    const updateDeleteImageButtonBackgroundColor = () => {
-        if (images.length === 0) {
-            setDeleteImageButtonBackgroundColor('#DFDFDF')
-        } else {
-            setDeleteImageButtonBackgroundColor('#F44336')
-        }
     }
 
     const onInstructionsUpdate = (newInstructions) => {
@@ -214,10 +211,6 @@ export default function AddRecipeScreen({ navigation }) {
         </View>
     );
 }
-
-AddRecipeScreen.navigationOptions = {
-  header: null,
-};
 
 const styles = StyleSheet.create({
     main: {

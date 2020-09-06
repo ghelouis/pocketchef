@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Alert, StyleSheet, Text, View, ScrollView} from 'react-native';
 import StaticList from '../components/StaticList'
-import DB from '../database/Database'
-import FS from '../fs/FS'
 import i18n from 'i18n-js';
 import {SliderBox} from "react-native-image-slider-box";
 import ImageView from "react-native-image-viewing";
@@ -10,6 +8,15 @@ import Header from "../components/Header";
 import NumberPerson from "../components/NumberPerson";
 import {exportRecipe} from "../utils/export";
 import IconButton from "../components/IconButton";
+import {
+    deleteRecipeFromDB,
+    getIngredientsFromDB,
+    getInstructionsFromDB,
+    getNbPersonFromDB,
+    getRecipeFromDB,
+    getUtensilsFromDB
+} from "../utils/database";
+import {deleteAllImages, loadMainImages, mainImagesDir} from "../utils/images";
 
 /**
  * Display a single recipe
@@ -34,18 +41,18 @@ export default function RecipeScreen({ route, navigation }) {
     const [notes, setNotes] = useState('')
 
     const loadImages = () => {
-        FS.loadMainImages(recipeId).then((res) => {
-            setImages(res.map(u => ({key: u, uri: FS.mainImagesDir(recipeId) + '/' + u})))
+        loadMainImages(recipeId).then((res) => {
+            setImages(res.map(u => ({key: u, uri: mainImagesDir(recipeId) + '/' + u})))
         }).catch((err) => {
             console.log("Error retrieving images for recipe " + recipeId + ": " + err)
         })
     }
 
     const loadRecipe = () => {
-        DB.getRecipe(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
-        DB.getUtensils(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
-        DB.getIngredients(recipeId, onLoadIngredientsSuccess, onLoadIngredientsError)
-        DB.getInstructions(recipeId, onLoadInstructionsSuccess, onLoadInstructionsError)
+        getRecipeFromDB(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
+        getUtensilsFromDB(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
+        getIngredientsFromDB(recipeId, onLoadIngredientsSuccess, onLoadIngredientsError)
+        getInstructionsFromDB(recipeId, onLoadInstructionsSuccess, onLoadInstructionsError)
     }
 
     const onLoadRecipeSuccess = (tx, results) => {
@@ -139,8 +146,8 @@ export default function RecipeScreen({ route, navigation }) {
             [
                 {
                     text: 'OK', onPress: () => {
-                        FS.deleteAllImages(recipeId).then(() => {
-                            DB.deleteRecipe(recipeId, onDeleteSuccess, onDeleteError)
+                        deleteAllImages(recipeId).then(() => {
+                            deleteRecipeFromDB(recipeId, onDeleteSuccess, onDeleteError)
                         })
                     }
                 }
@@ -159,7 +166,7 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const updateIngredientsWithRatio = (ratio) => {
-        const newIngreds = JSON.parse(JSON.stringify(originalIngredients)).map(i => {
+        const newIngredients = JSON.parse(JSON.stringify(originalIngredients)).map(i => {
             if (i.quantity) {
                 const newQuantity = i.quantity * ratio
                 if (!isNaN(newQuantity)) {
@@ -168,10 +175,10 @@ export default function RecipeScreen({ route, navigation }) {
             }
             return i
         })
-        setIngredients(newIngreds.map(buildIngredientListItem))
+        setIngredients(newIngredients.map(buildIngredientListItem))
     }
 
-    const exportTheRecipe = () => {
+    const exportTheRecipe = async () => {
         const recipe = {
             id: recipeId,
             title: title,
@@ -181,11 +188,7 @@ export default function RecipeScreen({ route, navigation }) {
             utensils: utensils,
             notes: notes
         }
-        exportRecipe(recipe)
-            .then((target) =>
-                Alert.alert('', i18n.t('exportSuccess') + target))
-            .catch((error) =>
-                Alert.alert('', i18n.t('exportFailure') + error))
+        await exportRecipe(recipe)
     }
 
     return (
@@ -202,7 +205,7 @@ export default function RecipeScreen({ route, navigation }) {
                     leftText={i18n.t('for')}
                     rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
                     onUpdate={onNbPersonUpdate}
-                    loadValue={DB.getNbPerson}
+                    loadValue={getNbPersonFromDB}
                     recipeId={recipeId}
                 />
                 {ingredients.length > 0 ? <Header value={i18n.t('ingredients')}/> : null}
@@ -223,7 +226,7 @@ export default function RecipeScreen({ route, navigation }) {
             <View style={styles.buttonContainer}>
                 <IconButton
                     name={i18n.t('export')}
-                    onPress={() => exportTheRecipe()}
+                    onPress={exportTheRecipe}
                     icon={"download"}
                 />
                 <IconButton
