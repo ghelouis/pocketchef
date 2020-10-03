@@ -1,52 +1,35 @@
 import {StyleSheet, Text, View, Button} from "react-native";
-import React, {useEffect, useState} from "react";
+import React from "react";
+import i18n from "i18n-js";
 
-export default function NumberPerson({min, leftText, rightText, onUpdate, loadValue, recipeId}) {
-    const [nbPerson, setNbPerson] = useState(1);
-    useEffect(() => {
-        if (loadValue) {
-            loadValue(recipeId, onLoadValueSuccess, onLoadValueError)
-        }
-    }, [])
+export default function NumberPerson({value, onValueUpdate}) {
 
-    const onLoadValueSuccess = (tx, results) => {
-        const currentNbPerson = results.rows.item(0).nb_person
-        setNbPerson(currentNbPerson)
-        onUpdate(currentNbPerson)
-    }
-
-    const onLoadValueError = (t, err) => {
-        console.log("Failed to load number input value with:", err)
-    }
+    const min = 1
 
     const increase = () => {
-        const newNbPerson = nbPerson + 1
-        onUpdate(newNbPerson)
-        setNbPerson(newNbPerson)
+        onValueUpdate(value + 1)
     }
 
     const decrease = () => {
-        if (nbPerson > min) {
-            const newNbPerson = nbPerson - 1
-            onUpdate(newNbPerson)
-            setNbPerson(newNbPerson)
+        if (value > min) {
+            onValueUpdate(value - 1)
         }
     }
 
     return (
         <View style={styles.main}>
-            <Text style={styles.text}>{leftText} </Text>
+            <Text style={styles.text}>{i18n.t('for')} </Text>
             <Button
                 title={'-'}
                 onPress={decrease}
-                disabled={nbPerson < 2}
+                disabled={value === min}
             />
-            <Text> {nbPerson} </Text>
+            <Text> {value} </Text>
             <Button
                 title={'+'}
                 onPress={increase}
             />
-            <Text style={styles.text}> {rightText}</Text>
+            <Text style={styles.text}> {value === 1 ? i18n.t('person') : i18n.t('people')}</Text>
         </View>
     )
 }

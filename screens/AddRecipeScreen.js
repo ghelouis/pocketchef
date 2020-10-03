@@ -165,10 +165,8 @@ export default function AddRecipeScreen({ navigation }) {
                     deleteCurrentImageDisabled={images.length < 1}
                 />
                 <NumberPerson
-                    min={1}
-                    leftText={i18n.t('for')}
-                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                    onUpdate={onNbPersonUpdate}
+                    value={nbPerson}
+                    onValueUpdate={onNbPersonUpdate}
                 />
                 <Header value={i18n.t('ingredients')}/>
                 <DynamicIngredientList

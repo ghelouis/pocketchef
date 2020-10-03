@@ -12,8 +12,6 @@ import {
     deleteRecipeFromDB,
     getIngredientsFromDB,
     getInstructionsFromDB,
-    getNbPersonFromDB,
-    getRecipeFromDB,
     getUtensilsFromDB
 } from "../utils/database";
 import {deleteAllImages, loadMainImages, mainImagesDir} from "../utils/images";
@@ -22,7 +20,12 @@ import {deleteAllImages, loadMainImages, mainImagesDir} from "../utils/images";
  * Display a single recipe
  */
 export default function RecipeScreen({ route, navigation }) {
-    const {title, recipeId} = route.params
+    React.useEffect(() => {
+        if (route.params?.nbPerson) {
+            setDisplayNbPerson(route.params.nbPerson)
+        }
+    }, [route.params?.nbPerson]);
+    const {recipeId, title, nbPerson, notes} = route.params
     navigation.setOptions({title: title})
     const [images, setImages] = useState([])
     useEffect(() => {
@@ -32,13 +35,11 @@ export default function RecipeScreen({ route, navigation }) {
         });
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-    const [nbPerson, setNbPerson] = useState(1);
-    const [originalNbPerson, setOriginalNbPerson] = useState(undefined);
+    const [displayNbPerson, setDisplayNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([])
     const [originalIngredients, setOriginalIngredients] = useState([])
     const [instructions, setInstructions] = useState([])
     const [utensils, setUtensils] = useState([])
-    const [notes, setNotes] = useState('')
 
     const loadImages = () => {
         loadMainImages(recipeId).then((res) => {
@@ -49,19 +50,9 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const loadRecipe = () => {
-        getRecipeFromDB(recipeId, onLoadRecipeSuccess, onLoadRecipeError)
         getUtensilsFromDB(recipeId, onLoadUtensilsSuccess, onLoadUtensilsError)
         getIngredientsFromDB(recipeId, onLoadIngredientsSuccess, onLoadIngredientsError)
         getInstructionsFromDB(recipeId, onLoadInstructionsSuccess, onLoadInstructionsError)
-    }
-
-    const onLoadRecipeSuccess = (tx, results) => {
-        if (results.rows.length < 1) {
-            console.log("Error: recipe not found")
-        } else {
-            const recipe = results.rows.item(0)
-            setNotes(recipe.notes)
-        }
     }
 
     const orderListResult = (results, buildListItem) => {
@@ -157,12 +148,8 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const onNbPersonUpdate = (newNbPerson) => {
-        setNbPerson(newNbPerson)
-        if (originalNbPerson === undefined) {
-            setOriginalNbPerson(newNbPerson)
-        } else {
-            updateIngredientsWithRatio(newNbPerson / originalNbPerson)
-        }
+        setDisplayNbPerson(newNbPerson)
+        updateIngredientsWithRatio(newNbPerson / nbPerson)
     }
 
     const updateIngredientsWithRatio = (ratio) => {
@@ -182,13 +169,26 @@ export default function RecipeScreen({ route, navigation }) {
         const recipe = {
             id: recipeId,
             title: title,
-            nbPerson: originalNbPerson,
+            nbPerson: nbPerson,
             ingredients: ingredients,
             instructions: instructions,
             utensils: utensils,
             notes: notes
         }
         await exportRecipe(recipe)
+    }
+
+    const navigateToEdit = () => {
+        const recipe = {
+            id: recipeId,
+            title: title,
+            nbPerson: nbPerson,
+            ingredients: ingredients,
+            instructions: instructions,
+            utensils: utensils,
+            notes: notes
+        }
+        navigation.navigate('EditRecipe', recipe)
     }
 
     return (
@@ -201,12 +201,8 @@ export default function RecipeScreen({ route, navigation }) {
                     onCurrentImagePressed={index => setImageViewerModalState({imgIndex: index, isVisible: true})}
                 />
                 <NumberPerson
-                    min={1}
-                    leftText={i18n.t('for')}
-                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                    onUpdate={onNbPersonUpdate}
-                    loadValue={getNbPersonFromDB}
-                    recipeId={recipeId}
+                    value={displayNbPerson}
+                    onValueUpdate={onNbPersonUpdate}
                 />
                 {ingredients.length > 0 ? <Header value={i18n.t('ingredients')}/> : null}
                 {ingredients.length > 0 ? <StaticList items={ingredients}/> : null}
@@ -236,7 +232,7 @@ export default function RecipeScreen({ route, navigation }) {
                 />
                 <IconButton
                     name={i18n.t('edit')}
-                    onPress={() => navigation.navigate('EditRecipe', {recipeId: recipeId})}
+                    onPress={navigateToEdit}
                     icon={"pencil"}
                 />
             </View>

@@ -20,24 +20,37 @@ pistes étudiées:
 
 
 
+WIP:
 
-WIP
-===
+move loading full recipe to recipes screen when clicking on recipe row
+rationale: better mini lag when clicking than when arriving on page
 
-le nb de personnes ne se met pas à jour qd modif + go back (but ok in db)
+Flicker when arriving on a screen
+---------------------------------
+Hmm.
+Even when waiting for all db results to arrive, setData functions &
+sub-components are asynchronous. No obvious solution comes to mind. One big
+state? -> Yeah, let's give it a try.
+
+Seems to be working! :) :tada:
+todo:
+- finish migrating the rest of the screen to be like that (nb person + image)
+- manage nbPerson from screen (fix edit & back not updating the value)
+- refacto add/edit/.. screens
+- move to TS?
+- ...?
+- profit
 
 
-améliorer les perfs: 1 requête SQL instead of many, voir filer les données
-depuis la page d'avant sans re-requêter la DB?
-
-
-refacto++:  add/export recipe now that you know how :)
-
-move to TS :D
-
-
-
-
+revisit ingredients: use a single field
+  simpler algorithm:
+    get first word
+      if is number: ...
+      else:
+      // all ifs here can be beginning of word instead of first word
+        if is xxx,xxx && x are digits, replace ',' with '.' & ...
+        else if xxxAAAA: multiply xxx (for 8mg)
+        else if xxx/xxx && x are digits: multiply numérateur & dénominateur (+simplify? :D)
 
 
 

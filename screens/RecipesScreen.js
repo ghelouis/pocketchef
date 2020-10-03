@@ -9,7 +9,7 @@ import {getAllImages} from "../utils/images";
  * List all recipes
  */
 export default function RecipesScreen({ navigation }) {
-    const [data, setData] = useState([])
+    const [recipes, setRecipes] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
             getRecipesFromDB(onSuccess, onError);
@@ -23,9 +23,9 @@ export default function RecipesScreen({ navigation }) {
             const len = results.rows.length
             for (let i = 0; i < len; i++) {
                 let row = results.rows.item(i)
-                tmpData.push({key: row.id, title: row.title, uri: idToImg.get(row.id)})
+                tmpData.push({key: row.id, title: row.title, nbPerson: row.nb_person, notes: row.notes, uri: idToImg.get(row.id)})
             }
-            setData(tmpData.sort((a, b) => {
+            setRecipes(tmpData.sort((a, b) => {
                 if (a.title < b.title) return -1
                 if (a.title > b.title) return 1
                 return 0
@@ -43,11 +43,11 @@ export default function RecipesScreen({ navigation }) {
     return (
         <View style={styles.main}>
             <FlatList
-                data={data}
+                data={recipes}
                 renderItem={({item, index, separators}) => (
                     <TouchableHighlight
                         key={item.key}
-                        onPress={() => navigation.navigate('Recipe', {title: item.title, recipeId: item.key})}
+                        onPress={() => navigation.navigate('Recipe', {recipeId: item.key, title: item.title, nbPerson: item.nbPerson, notes: item.notes})}
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
                         <View style={styles.itemContainer}>
@@ -57,7 +57,7 @@ export default function RecipesScreen({ navigation }) {
                                 style={styles.image}
                             />
                             <View
-                                style={index === data.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
+                                style={index === recipes.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
                                 <Text style={styles.item}>{item.title}</Text>
                             </View>
                         </View>

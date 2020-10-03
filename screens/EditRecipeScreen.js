@@ -15,8 +15,6 @@ import Constants from "expo-constants";
 import {
     getIngredientsFromDB,
     getInstructionsFromDB,
-    getNbPersonFromDB,
-    getRecipeFromDB,
     getUtensilsFromDB,
     updateRecipeInDB
 } from "../utils/database";
@@ -27,10 +25,10 @@ import {loadMainImages, mainImagesDir, updateMainImages} from "../utils/images";
  * Edit an existing recipe
  */
 export default function EditRecipeScreen({ route, navigation }) {
-    const {recipeId} = route.params
+    const recipe = route.params
     useEffect(() => {
-        getRecipeFromDB(recipeId, onSuccess, onError)
-    }, [recipeId])
+        loadRecipe()
+    }, [])
     const [title, setTitle] = useState('')
     const [nbPerson, setNbPerson] = useState(1)
     const [ingredients, setIngredients] = useState([])
@@ -44,42 +42,36 @@ export default function EditRecipeScreen({ route, navigation }) {
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
     const loadImages = () => {
-        loadMainImages(recipeId).then((res) => {
-            setImages(res.map(u => ({key: u, uri: mainImagesDir(recipeId) + '/' + u})))
+        loadMainImages(recipe.id).then((res) => {
+            setImages(res.map(u => ({key: u, uri: mainImagesDir(recipe.id) + '/' + u})))
         }).catch((err) => {
-            console.log("Error retrieving images for recipe " + recipeId + ": " + err)
+            console.log("Error retrieving images for recipe " + recipe.id + ": " + err)
         })
     }
 
-    const onSuccess = (tx, results) => {
-        const len = results.rows.length
-        if (len < 1) {
-            console.log("Error: recipe not found")
-        } else {
-            const recipe = results.rows.item(0)
-            setTitle(recipe.title)
-            setNotes(recipe.notes)
-        }
-    }
-
-    const onError = (err) => {
-        console.log("Error retrieving recipe:", err)
-        return false
+    const loadRecipe = () => {
+        setTitle(recipe.title)
+        setNbPerson(recipe.nbPerson)
+        setNotes(recipe.notes)
     }
 
     const onUpdate = () => {
         Alert.alert('',
             i18n.t('updateSuccess'),
             [
-                {text: 'OK', onPress: () => navigation.navigate('Recipe', {title: title, recipeId: recipeId})}
+                {text: 'OK', onPress: () => {
+                    console.log("test 2")
+                        console.log(nbPerson)
+                    navigation.navigate('Recipe', {recipeId: recipe.id, title: title, nbPerson: nbPerson, notes: notes})
+                    }}
             ],
             {cancelable: false}
         )
     }
 
     const updateRecipe = () => {
-        updateMainImages(recipeId, images.map(o => o.uri)).then(() => {
-                updateRecipeInDB(recipeId, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate)
+        updateMainImages(recipe.id, images.map(o => o.uri)).then(() => {
+                updateRecipeInDB(recipe.id, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate)
             }
         ).catch((err) => {
             console.log("Update recipe: failed to save images to file system:", err)
@@ -188,22 +180,18 @@ export default function EditRecipeScreen({ route, navigation }) {
                     deleteCurrentImageDisabled={images.length < 1}
                 />
                 <NumberPerson
-                    min={1}
-                    leftText={i18n.t('for')}
-                    rightText={nbPerson === 1 ? i18n.t('person') : i18n.t('people')}
-                    onUpdate={onNbPersonUpdate}
-                    loadValue={getNbPersonFromDB}
-                    recipeId={recipeId}
+                    value={nbPerson}
+                    onValueUpdate={onNbPersonUpdate}
                 />
                 <Header value={i18n.t('ingredients')}/>
                 <DynamicIngredientList
-                    recipeId={recipeId}
+                    recipeId={recipe.id}
                     loadItems={getIngredientsFromDB}
                     onUpdateItems={onIngredientsUpdate}
                 />
                 <Header value={i18n.t('instructions')}/>
                 <DynamicList
-                    recipeId={recipeId}
+                    recipeId={recipe.id}
                     loadItems={getInstructionsFromDB}
                     onUpdateItems={onInstructionsUpdate}
                     multiline={true}
@@ -211,7 +199,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                 />
                 <Header value={i18n.t('utensils')}/>
                 <DynamicList
-                    recipeId={recipeId}
+                    recipeId={recipe.id}
                     loadItems={getUtensilsFromDB}
                     onUpdateItems={onUtensilsUpdate}
                 />
@@ -232,7 +220,7 @@ export default function EditRecipeScreen({ route, navigation }) {
             <TextButtonDuo
                 title={i18n.t('update')}
                 onActionPress={updateRecipe}
-                onCancelPress={() => navigation.navigate('Recipe', {recipeId: recipeId})}
+                onCancelPress={() => navigation.navigate('Recipe', {recipeId: recipe.id, title: title, nbPerson: nbPerson, notes: notes})}
                 actionDisabled={!title}
             />
         </View>

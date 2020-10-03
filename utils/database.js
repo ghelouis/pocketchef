@@ -56,7 +56,7 @@ function createInstructionsTable(onSuccess) {
 
 export function getRecipesFromDB(onSuccess, onError) {
     db.transaction(tx => {
-        tx.executeSql('SELECT id, title FROM recipes', [], onSuccess, onError)
+        tx.executeSql('SELECT id, title, nb_person, notes FROM recipes', [], onSuccess, onError)
     });
 }
 
