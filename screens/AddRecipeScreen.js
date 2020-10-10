@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, View, StyleSheet, Alert, ScrollView } from 'react-native';
 import DynamicList from '../components/DynamicList'
-import DynamicIngredientList from "../components/DynamicIngredientList";
 import NumberPerson from "../components/NumberPerson";
 import i18n from 'i18n-js';
 import * as ImagePicker from 'expo-image-picker';
@@ -169,13 +168,12 @@ export default function AddRecipeScreen({ navigation }) {
                     onValueUpdate={onNbPersonUpdate}
                 />
                 <Header value={i18n.t('ingredients')}/>
-                <DynamicIngredientList
+                <DynamicList
                     onUpdateItems={onIngredientsUpdate}
                 />
                 <Header value={i18n.t('instructions')}/>
                 <DynamicList
                     recipeId={id}
-                    loadItems={undefined}
                     onUpdateItems={onInstructionsUpdate}
                     multiline={true}
                     ordered={true}
@@ -183,7 +181,6 @@ export default function AddRecipeScreen({ navigation }) {
                 <Header value={i18n.t('utensils')}/>
                 <DynamicList
                     recipeId={id}
-                    loadItems={undefined}
                     onUpdateItems={onUtensilsUpdate}
                 />
                 <Header value={'Notes'}/>

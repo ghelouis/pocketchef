@@ -15,6 +15,7 @@ import {
     getUtensilsFromDB
 } from "../utils/database";
 import {deleteAllImages, loadMainImages, mainImagesDir} from "../utils/images";
+import {multiplyIngredient} from "../utils/ingredientMultiplier";
 
 /**
  * Display a single recipe
@@ -70,16 +71,6 @@ export default function RecipeScreen({ route, navigation }) {
         }).map(buildListItem)
     }
 
-    const buildIngredientListItem = (item) => {
-        const quantity = item.quantity ? item.quantity + ' ' : ''
-        const unit = item.unit ? item.unit + ' ' : ''
-        const value = item.value ? item.value : ''
-        return {
-            key: item.step.toString(),
-            value: quantity + unit + value
-        }
-    }
-
     const buildSimpleListItem = (item) => {
         return {
             key: item.step.toString(),
@@ -88,14 +79,8 @@ export default function RecipeScreen({ route, navigation }) {
     }
 
     const onLoadIngredientsSuccess = (tx, results) => {
-        setIngredients(orderListResult(results, buildIngredientListItem))
-        const len = results.rows.length
-        const tmp = []
-        if (len > 0) {
-            for (let i = 0; i < len; i++) {
-                tmp.push(results.rows.item(i))
-            }
-        }
+        const tmp = orderListResult(results, buildSimpleListItem)
+        setIngredients(tmp)
         setOriginalIngredients(tmp)
     }
 
@@ -105,10 +90,6 @@ export default function RecipeScreen({ route, navigation }) {
 
     const onLoadUtensilsSuccess = (tx, results) => {
         setUtensils(orderListResult(results, buildSimpleListItem))
-    }
-
-    const onLoadRecipeError = (tx, err) => {
-        console.log("Error retrieving recipe " + recipeId + ":", err)
     }
 
     const onLoadUtensilsError = (tx, err) => {
@@ -149,20 +130,12 @@ export default function RecipeScreen({ route, navigation }) {
 
     const onNbPersonUpdate = (newNbPerson) => {
         setDisplayNbPerson(newNbPerson)
-        updateIngredientsWithRatio(newNbPerson / nbPerson)
-    }
-
-    const updateIngredientsWithRatio = (ratio) => {
-        const newIngredients = JSON.parse(JSON.stringify(originalIngredients)).map(i => {
-            if (i.quantity) {
-                const newQuantity = i.quantity * ratio
-                if (!isNaN(newQuantity)) {
-                    i.quantity = Number(newQuantity.toFixed(2))
-                }
-            }
-            return i
-        })
-        setIngredients(newIngredients.map(buildIngredientListItem))
+        const ratio = newNbPerson / nbPerson
+        const newIngredients = originalIngredients.map(i => ({
+            key: i.key,
+            value: multiplyIngredient(i.value, ratio)
+        }))
+        setIngredients(newIngredients)
     }
 
     const exportTheRecipe = async () => {

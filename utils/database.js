@@ -30,7 +30,7 @@ function createUtensilsTable(onSuccess) {
 
 function createIngredientsTable(onSuccess) {
     db.transaction(tx => {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS ingredients(id TEXT PRIMARY KEY, step INTEGER NOT NULL, value TEXT, quantity TEXT, unit TEXT, recipe_id REFERENCES recipes(id))',
+        tx.executeSql('CREATE TABLE IF NOT EXISTS ingredients(id TEXT PRIMARY KEY, step INTEGER NOT NULL, value TEXT NOT NULL, recipe_id REFERENCES recipes(id))',
             [],
             () => {
                 console.log("DB: ingredients table created successfully.")
@@ -80,7 +80,7 @@ export function getUtensilsFromDB(recipeId, onSuccess, onError) {
 
 export function getIngredientsFromDB(recipeId, onSuccess, onError) {
     db.transaction(tx => {
-        tx.executeSql('SELECT id, step, quantity, unit, value FROM ingredients WHERE recipe_id=?', [recipeId], onSuccess, onError)
+        tx.executeSql('SELECT id, step, value FROM ingredients WHERE recipe_id=?', [recipeId], onSuccess, onError)
     })
 }
 
@@ -95,8 +95,8 @@ export function getInstructionsFromDB(recipeId, onSuccess, onError) {
 export function saveRecipeToDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError) {
     const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
     const utensilsArgs = utensils.flatMap(utensil => [genUUID(), utensil.step, utensil.value, id])
-    const ingredientValues = ingredients.map(() => '(?,?,?,?,?,?)').join(',')
-    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.quantity, ingredient.unit, ingredient.value, id])
+    const ingredientValues = ingredients.map(() => '(?,?,?,?)').join(',')
+    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.value, id])
     const instructionValues = instructions.map(() => '(?,?,?,?)').join(',')
     const instructionsArgs = instructions.flatMap(instruction => [genUUID(), instruction.step, instruction.value, id])
     db.transaction(tx => {
@@ -108,7 +108,7 @@ export function saveRecipeToDB(id, title, nbPerson, ingredients, instructions, u
                 utensilsArgs)
         }
         if (ingredients.length > 0) {
-            tx.executeSql('INSERT INTO ingredients(id, step, quantity, unit, value, recipe_id) VALUES ' + ingredientValues,
+            tx.executeSql('INSERT INTO ingredients(id, step, value, recipe_id) VALUES ' + ingredientValues,
                 ingredientsArgs)
         }
         if (instructions.length > 0) {
@@ -121,8 +121,8 @@ export function saveRecipeToDB(id, title, nbPerson, ingredients, instructions, u
 export function updateRecipeInDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate) {
     const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
     const utensilsArgs = utensils.flatMap(utensil => [genUUID(), utensil.step, utensil.value, id])
-    const ingredientValues = ingredients.map(() => '(?,?,?,?,?,?)').join(',')
-    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.quantity, ingredient.unit, ingredient.value, id])
+    const ingredientValues = ingredients.map(() => '(?,?,?,?)').join(',')
+    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.value, id])
     const instructionValues = instructions.map(() => '(?,?,?,?)').join(',')
     const instructionsArgs = instructions.flatMap(instruction => [genUUID(), instruction.step, instruction.value, id])
     db.transaction(tx => {
@@ -144,7 +144,7 @@ export function updateRecipeInDB(id, title, nbPerson, ingredients, instructions,
                 utensilsArgs)
         }
         if (ingredients.length > 0) {
-            tx.executeSql('INSERT INTO ingredients(id, step, quantity, unit, value, recipe_id) VALUES ' + ingredientValues,
+            tx.executeSql('INSERT INTO ingredients(id, step, value, recipe_id) VALUES ' + ingredientValues,
                 ingredientsArgs)
         }
         if (instructions.length > 0) {

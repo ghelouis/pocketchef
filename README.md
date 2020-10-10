@@ -1,7 +1,7 @@
 
 # Run
 - yarn start (which runs expo start)
-- run on android via usb locally without internet: expo start --localhost --android
+- run on android via usb locally without internet: expo start --offline --localhost --android
 
 # Publish
 - expo publish

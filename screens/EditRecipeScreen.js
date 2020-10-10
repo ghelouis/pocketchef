@@ -7,7 +7,6 @@ import {SliderBox} from "react-native-image-slider-box";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import NumberPerson from "../components/NumberPerson";
-import DynamicIngredientList from "../components/DynamicIngredientList";
 import Header from "../components/Header";
 import TextButtonDuo from "../components/TextButtonDuo";
 import PhotoButtons from "../components/PhotoButtons";
@@ -59,11 +58,16 @@ export default function EditRecipeScreen({ route, navigation }) {
         Alert.alert('',
             i18n.t('updateSuccess'),
             [
-                {text: 'OK', onPress: () => {
-                    console.log("test 2")
-                        console.log(nbPerson)
-                    navigation.navigate('Recipe', {recipeId: recipe.id, title: title, nbPerson: nbPerson, notes: notes})
-                    }}
+                {
+                    text: 'OK', onPress: () => {
+                        navigation.navigate('Recipe', {
+                            recipeId: recipe.id,
+                            title: title,
+                            nbPerson: nbPerson,
+                            notes: notes
+                        })
+                    }
+                }
             ],
             {cancelable: false}
         )
@@ -184,7 +188,7 @@ export default function EditRecipeScreen({ route, navigation }) {
                     onValueUpdate={onNbPersonUpdate}
                 />
                 <Header value={i18n.t('ingredients')}/>
-                <DynamicIngredientList
+                <DynamicList
                     recipeId={recipe.id}
                     loadItems={getIngredientsFromDB}
                     onUpdateItems={onIngredientsUpdate}
@@ -220,7 +224,7 @@ export default function EditRecipeScreen({ route, navigation }) {
             <TextButtonDuo
                 title={i18n.t('update')}
                 onActionPress={updateRecipe}
-                onCancelPress={() => navigation.navigate('Recipe', {recipeId: recipe.id, title: title, nbPerson: nbPerson, notes: notes})}
+                onCancelPress={() => navigation.navigate('Recipe')}
                 actionDisabled={!title}
             />
         </View>

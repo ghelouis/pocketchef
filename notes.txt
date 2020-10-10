@@ -17,65 +17,11 @@ pistes étudiées:
   raw react access to external storage? https://github.com/itinance/react-native-fs
 
 
-
-
-
-WIP:
-
-move loading full recipe to recipes screen when clicking on recipe row
-rationale: better mini lag when clicking than when arriving on page
-
-Flicker when arriving on a screen
----------------------------------
-Hmm.
-Even when waiting for all db results to arrive, setData functions &
-sub-components are asynchronous. No obvious solution comes to mind. One big
-state? -> Yeah, let's give it a try.
-
-Seems to be working! :) :tada:
-todo:
-- finish migrating the rest of the screen to be like that (nb person + image)
-- manage nbPerson from screen (fix edit & back not updating the value)
-- refacto add/edit/.. screens
-- move to TS?
-- ...?
-- profit
-
-
-revisit ingredients: use a single field
-  simpler algorithm:
-    get first word
-      if is number: ...
-      else:
-      // all ifs here can be beginning of word instead of first word
-        if is xxx,xxx && x are digits, replace ',' with '.' & ...
-        else if xxxAAAA: multiply xxx (for 8mg)
-        else if xxx/xxx && x are digits: multiply numérateur & dénominateur (+simplify? :D)
-
-
-
-
-
-
-way to browse the db to double check what is going on?
-  ex: how can I save a 'bbb' quantity into a REAL field :mind-blown:
-
-
 ingrédients
 -----------
 use case non géré: liste d'ingrédients / préparation pour 2 choses à faire pour
 cette recette: ex gâteau + glaçage, ou plat + sauce. Hmm...
 Right now kinda ok: lister ingreds à la suite, same pour la préparation
-
-
-laisser un champ libre et multiplier/auto détecter les nombres/fractions...?
-  -: possibilité de fail: e.g 1/ 2 -> 2/ 4
-  +: plus de liberté
-
-avoir une liste de quantité/unité de mesure/nom ?
-  -: still possibilité de fail, bien que moindre (oeufs/... trucs insécables)
-  -: structuré: e.g de la coriandre: on s'en fout de la quantité. Bruit visuel.
-  +: structuré
 
 
 
@@ -85,10 +31,16 @@ gestion des erreurs: popup instead of console.log?
 
 
 
+  https://madame.lefigaro.fr/recettes/curry-vegetarien-011216-128429
+    pas besoin de temps total(?)
+
+  préparation: no number(?), paragraphes
+
+
+
+
 attach any kind of file?
 e.g pdf,... + on click propose to open with phone eligible apps
-
-https://material.io/design/color/the-color-system.html#color-theme-creation
 
 
 
@@ -105,3 +57,17 @@ https://material.io/design/color/the-color-system.html#color-theme-creation
 
 # Durée
 temps total = temps de préparation + temps de cuisson
+
+design
+-------
+https://material.io/design/color/the-color-system.html#color-theme-creation
+color scheme
+  https://blog.datawrapper.de/beautifulcolors/
+  https://color.adobe.com/create/color-wheel
+  https://www.sessions.edu/color-calculator/
+  https://www.w3schools.com/colors/
+  https://www.toptal.com/designers/colorfilter
+  http://paletton.com/#uid=1000u0kllllaFw0g0qFqFg0w0aF
+  https://www.colorcombos.com/
+  https://www.colorbox.io/
+  https://learnui.design/tools/data-color-picker.html
