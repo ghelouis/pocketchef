@@ -88,3 +88,12 @@ function saveMainImage(recipeId, uri, dir) {
 export function loadMainImages(recipeId) {
     return FileSystem.readDirectoryAsync(mainImagesDir(recipeId))
 }
+
+export async function loadMainImagesAsBase64(recipeId) {
+    const imgsDir = mainImagesDir(recipeId)
+    const images = (await (FileSystem.readDirectoryAsync(imgsDir))).map(name => ({name: name, data: undefined}))
+    await asyncForEach(images, async (image) => {
+        image.data = await(FileSystem.readAsStringAsync(imgsDir + "/" + image.name, {encoding: 'base64'}))
+    })
+    return images
+}

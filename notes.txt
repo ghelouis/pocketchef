@@ -14,6 +14,7 @@ pistes étudiées:
     beautifully simple, one liner to export a file and prompt the user for an
     app able to handle it.
     Go! Coupled with .zip maker should be fine, now? :)
+    YES. with JsZip.
   raw react access to external storage? https://github.com/itinance/react-native-fs
 
 

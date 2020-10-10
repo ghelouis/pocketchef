@@ -21,6 +21,7 @@
   "exportFailure": "Export failed: ",
   "missingPermissionError": "Sorry, the camera roll permission is needed to make this work!",
   "export": "Export",
+  "import": "Import",
   "delete": "Delete",
   "edit": "Edit,",
   "new": "New recipe",

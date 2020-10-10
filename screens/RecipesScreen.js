@@ -4,6 +4,7 @@ import i18n from "i18n-js";
 import TextButton from "../components/TextButton";
 import {getRecipesFromDB} from "../utils/database";
 import {getAllImages} from "../utils/images";
+import IconButton from "../components/IconButton";
 
 /**
  * List all recipes
@@ -23,7 +24,13 @@ export default function RecipesScreen({ navigation }) {
             const len = results.rows.length
             for (let i = 0; i < len; i++) {
                 let row = results.rows.item(i)
-                tmpData.push({key: row.id, title: row.title, nbPerson: row.nb_person, notes: row.notes, uri: idToImg.get(row.id)})
+                tmpData.push({
+                    key: row.id,
+                    title: row.title,
+                    nbPerson: row.nb_person,
+                    notes: row.notes,
+                    uri: idToImg.get(row.id)
+                })
             }
             setRecipes(tmpData.sort((a, b) => {
                 if (a.title < b.title) return -1
@@ -47,7 +54,12 @@ export default function RecipesScreen({ navigation }) {
                 renderItem={({item, index, separators}) => (
                     <TouchableHighlight
                         key={item.key}
-                        onPress={() => navigation.navigate('Recipe', {recipeId: item.key, title: item.title, nbPerson: item.nbPerson, notes: item.notes})}
+                        onPress={() => navigation.navigate('Recipe', {
+                            recipeId: item.key,
+                            title: item.title,
+                            nbPerson: item.nbPerson,
+                            notes: item.notes
+                        })}
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
                         <View style={styles.itemContainer}>

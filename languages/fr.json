@@ -21,6 +21,7 @@
   "exportFailure": "Échec de l'export: ",
   "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
   "export": "Exporter",
+  "import": "Importer",
   "delete": "Supprimer",
   "edit": "Modifier",
   "new": "Nouvelle recette",
