@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { SplashScreen } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecipesScreen from './screens/RecipesScreen';
@@ -29,26 +28,14 @@ export default function App(props) {
   const onInitComplete = () => {
     console.log("DB init successful")
     createRecipesDir()
-    SplashScreen.hide();
-    setLoadingComplete(true);
+    setLoadingComplete(true)
   }
   // Load any resources or data that we need prior to rendering the app
   React.useEffect(() => {
-    async function loadResourcesAndDataAsync() {
-      try {
-        SplashScreen.preventAutoHide();
-      } catch (e) {
-        // We might want to provide this error information to an error reporting service
-        console.warn(e);
-      } finally {
-        initDB(onInitComplete)
-      }
-    }
+    initDB(onInitComplete)
+  }, [])
 
-    loadResourcesAndDataAsync();
-  }, []);
-
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
+  if (!isLoadingComplete) {
     return null;
   } else {
     return (

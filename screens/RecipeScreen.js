@@ -21,7 +21,7 @@ import {multiplyIngredient} from "../utils/ingredientMultiplier";
  * Display a single recipe
  */
 export default function RecipeScreen({ route, navigation }) {
-    React.useEffect(() => {
+    useEffect(() => {
         if (route.params?.nbPerson) {
             setDisplayNbPerson(route.params.nbPerson)
         }
