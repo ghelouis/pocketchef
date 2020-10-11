@@ -6,6 +6,15 @@ import JSZip from "jszip";
 
 /**
  * Manage exporting a recipe to external storage
+ *
+ * - if the recipe has no images: single markdown file <Recipe title>.md
+ * - if the recipe has images: zip file:
+ *     <Recipe title>.zip
+ *      |-- <Recipe title>.md
+ *      |-- images
+ *           |-- <image 1>
+ *           |-- <image 2>
+ *           |-- ...
  */
 
 export async function exportRecipe(recipe) {
@@ -37,11 +46,11 @@ async function exportAsZip(recipe, images) {
     await FileSystem.writeAsStringAsync(tmpFile, md)
     await FileSystem.copyAsync({from: imagesDir, to: tmpDir + '/images'})
     const zipTarget = FileSystem.cacheDirectory + '/' + recipe.title + ".zip"
-    const zip = new JSZip()
-    zip.file(fileName, md)
-    const imgZip = zip.folder("images")
+    const jszip = new JSZip()
+    jszip.file(fileName, md)
+    const imgZip = jszip.folder("images")
     images.map(image => imgZip.file(image.name, image.data, {base64: true}))
-    await zip.generateAsync({type:"base64"}).then(function(content) {
+    await jszip.generateAsync({type:"base64"}).then(function(content) {
         FileSystem.writeAsStringAsync(zipTarget, content, {
             encoding: FileSystem.EncodingType.Base64
         })

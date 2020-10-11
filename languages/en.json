@@ -32,6 +32,8 @@
     "missingPermission": "Sorry, the camera roll permission is needed to make this work!",
     "wrongDocType": "Please select a .zip archive or a .md file",
     "parseFailure": "Unable to import recipe — incorrect file",
-    "import": "Failed to save recipe :'( "
+    "import": "Failed to save recipe :'( ",
+    "invalidZip": "Invalid zip file",
+    "extractZip": "Error when trying to extract archive"
   }
 }

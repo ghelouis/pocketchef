@@ -5,38 +5,40 @@ import * as FileSystem from "expo-file-system";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import {saveRecipeToDB} from "./database";
+import JSZip from "jszip";
+import {saveMainImages, saveRawMainImage} from "./images";
 
 /**
  * Manage importing a recipe from external storage
+ *
+ * Mirror of export.js > exportRecipe
+ * Can import a single markdown file or a zip archive
  */
 
 export async function importRecipe(onImportRecipeSuccess) {
     const result = await DocumentPicker.getDocumentAsync()
     if (result.type === 'success') {
         const fileInCache = result.uri
+        const recipeId = uuidv4()
         if (fileInCache.endsWith(".md")) {
-            await importMd(fileInCache, onImportRecipeSuccess)
+            const md = await FileSystem.readAsStringAsync(fileInCache)
+            await importMd(md, recipeId, onImportRecipeSuccess)
         } else if (fileInCache.endsWith(".zip")) {
-            importZip(fileInCache)
+            await importZip(fileInCache, result.name, recipeId, onImportRecipeSuccess)
         } else {
             errorPopup(i18n.t("errors.wrongDocType"))
         }
     }
 }
 
-async function importMd(fileInCache, onImportRecipeSuccess) {
-    const md = await FileSystem.readAsStringAsync(fileInCache)
-    console.log("md:")
-    console.log(md)
+async function importMd(md, recipeId, onImportRecipeSuccess) {
     const recipe = recipeFromMarkdown(md)
     if (recipe.title === undefined) {
         errorPopup(i18n.t('parseFailure'))
     }
-    recipe.id = uuidv4()
-    console.log("recipe:")
-    console.log(recipe)
+    await saveMainImages(recipe.id, [])
     saveRecipeToDB(
-        recipe.id,
+        recipeId,
         recipe.title,
         recipe.nbPerson,
         recipe.ingredients,
@@ -50,8 +52,24 @@ async function importMd(fileInCache, onImportRecipeSuccess) {
         () => popup(i18n.t('errors.import')))
 }
 
-function importZip(fileInCache) {
-
+async function importZip(fileInCache, name, recipeId, onImportRecipeSuccess) {
+    const mdFile = name.replace(".zip", ".md")
+    const jszip = new JSZip()
+    const fileBase64 = await FileSystem.readAsStringAsync(fileInCache, {
+        encoding: FileSystem.EncodingType.Base64
+    })
+    jszip.loadAsync(fileBase64, {base64: true}).then(function (zip) {
+        Object.keys(zip.files).forEach((filename) => {
+            if (filename.startsWith("images/") && filename !== "images/") {
+                zip.files[filename].async('base64').then((imgData) => {
+                    saveRawMainImage(recipeId, filename, imgData)
+                })
+            }
+        })
+        zip.file(mdFile).async("string").then((md) => {
+            importMd(md, recipeId, onImportRecipeSuccess)
+        })
+    })
 }
 
 function recipeFromMarkdown(md) {

@@ -58,7 +58,7 @@ export async function updateMainImages(recipeId, uris) {
 }
 
 export async function deleteAllImages(recipeId) {
-    return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId, {idempotent: true})
+    return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId)
 }
 
 export async function getAllImages() {
@@ -77,12 +77,19 @@ export async function getAllImages() {
 export async function saveMainImages(recipeId, uris) {
     const dir = mainImagesDir(recipeId)
     await (FileSystem.makeDirectoryAsync(dir, {intermediates: true}))
-    return await (Promise.all(uris.map(uri => saveMainImage(recipeId, uri.uri, dir))))
+    return await (Promise.all(uris.map(uri => saveMainImage(recipeId, dir, uri.uri))))
 }
 
-function saveMainImage(recipeId, uri, dir) {
+function saveMainImage(recipeId, dir, uri) {
     const targetUri = dir + '/' + baseName(uri)
     return FileSystem.copyAsync({from: uri, to: targetUri})
+}
+
+export async function saveRawMainImage(recipeId, name, data) {
+    const dir = mainImagesDir(recipeId)
+    await (FileSystem.makeDirectoryAsync(dir, {intermediates: true}))
+    const targetUri = dir + '/' + baseName(name)
+    return FileSystem.writeAsStringAsync(targetUri, data, {encoding: 'base64'})
 }
 
 export function loadMainImages(recipeId) {

@@ -9,6 +9,10 @@
 # Publish
 - `expo publish`
 
+# Manage dependencies
+- Install package: `expo install <package>`
+- Remove package: `yarn remove <package>`
+
 # Libs used
 - UUIDs https://github.com/uuidjs/uuid + https://github.com/LinusU/react-native-get-random-values
 - Multi-lang support https://docs.expo.io/versions/latest/sdk/localization/
