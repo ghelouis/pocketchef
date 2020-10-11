@@ -36,7 +36,7 @@ async function importMd(md, recipeId, onImportRecipeSuccess) {
     if (recipe.title === undefined) {
         errorPopup(i18n.t('parseFailure'))
     }
-    await saveMainImages(recipe.id, [])
+    await saveMainImages(recipeId, [])
     saveRecipeToDB(
         recipeId,
         recipe.title,

@@ -7,15 +7,16 @@ export default function TextButtonDuo({title, onActionPress, onCancelPress, acti
         <View style={styles.buttonsContainer}>
             <TouchableOpacity
                 onPress={onCancelPress}
-                style={styles.buttonLeft}>
+                style={styles.button}>
                 <View>
                     <Text style={styles.textCancel}>{i18n.t('cancel')}</Text>
                 </View>
             </TouchableOpacity>
+            <View style={styles.separator}/>
             <TouchableOpacity
                 onPress={onActionPress}
                 disabled={actionDisabled}
-                style={styles.buttonRight}>
+                style={styles.button}>
                 <View>
                     <Text style={actionDisabled ? styles.textDisabled : styles.text}>{title}</Text>
                 </View>
@@ -27,21 +28,18 @@ export default function TextButtonDuo({title, onActionPress, onCancelPress, acti
 const styles = StyleSheet.create({
     buttonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
+        alignItems: 'center'
     },
-    buttonLeft: {
+    button: {
         flex: 1,
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderRightWidth: 0.5,
-        borderLeftColor: 'gainsboro'
+        paddingTop: 15,
+        paddingBottom: 15
     },
-    buttonRight: {
-        flex: 1,
-        paddingTop: 10,
-        paddingBottom: 10,
-        borderLeftWidth: 0.5,
-        borderLeftColor: 'gainsboro'
+    separator: {
+        borderWidth: 0.5,
+        borderLeftColor: 'gainsboro',
+        height: '40%'
     },
     text: {
         color: 'blue',
