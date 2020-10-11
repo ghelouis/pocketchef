@@ -17,9 +17,6 @@
   "save": "Sauvegarder",
   "updateSuccess": "Recette mise à jour avec succès",
   "saveSuccess": "Recette sauvegardée avec succès",
-  "exportSuccess": "Recette exportée avec succès vers: ",
-  "exportFailure": "Échec de l'export: ",
-  "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
   "export": "Exporter",
   "import": "Importer",
   "delete": "Supprimer",
@@ -28,5 +25,13 @@
   "cancel": "Annuler",
   "pickImage": "Galerie",
   "takePicture": "Prendre une photo",
-  "deleteCurrentImage": "Supprimer"
+  "deleteCurrentImage": "Supprimer",
+  "error": "Erreur",
+  "importSuccess": "Recette importée avec succès",
+  "errors": {
+    "missingPermission": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
+    "wrongDocType": "Veuillez sélectionner une archive .zip ou un fichier .md",
+    "parseFailure": "Échec d'import de la recette — fichier incorrect",
+    "import": "Erreur lors de la sauvegarde de la recette :'( "
+  }
 }

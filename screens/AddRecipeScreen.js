@@ -13,23 +13,16 @@ import TextButtonDuo from "../components/TextButtonDuo";
 import PhotoButtons from "../components/PhotoButtons";
 import {saveMainImages} from "../utils/images";
 import {saveRecipeToDB} from "../utils/database";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 
 /**
  * Create a new recipe
  */
 export default function AddRecipeScreen({ navigation }) {
-    const [id, setId] = useState('');
+    const id = uuidv4()
     const [title, setTitle] = useState('');
-    useEffect(() => {
-        // waiting for this issue to be resolved: https://github.com/uuidjs/uuid/issues/375
-        // (should be good enough for now - from https://stackoverflow.com/a/2117523)
-        const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-        setId(id)
-    }, [])
     const [nbPerson, setNbPerson] = useState(1);
     const [ingredients, setIngredients] = useState([]);
     const [instructions, setInstructions] = useState([]);
@@ -67,7 +60,7 @@ export default function AddRecipeScreen({ navigation }) {
         if (Constants.platform.ios) {
             const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                alert(i18n.t('missingPermissionError'));
+                alert(i18n.t('errors.missingPermission'));
             } else {
                 await pickTheImage()
             }
@@ -93,7 +86,7 @@ export default function AddRecipeScreen({ navigation }) {
     const takePicture = async () => {
         const {status} = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
         if (status !== 'granted') {
-            alert(i18n.t('missingPermissionError'));
+            alert(i18n.t('errors.missingPermission'));
         } else {
             await takeThePicture()
         }

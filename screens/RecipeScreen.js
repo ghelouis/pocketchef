@@ -206,7 +206,7 @@ export default function RecipeScreen({ route, navigation }) {
                 <IconButton
                     name={i18n.t('edit')}
                     onPress={navigateToEdit}
-                    icon={"pencil"}
+                    icon={"pencil-alt"}
                 />
             </View>
         </View>

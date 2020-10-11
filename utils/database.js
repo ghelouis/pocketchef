@@ -1,5 +1,7 @@
 import { openDatabase } from "expo-sqlite";
 const db = openDatabase("PocketChefDB.db");
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 /* ____________ Init  ____________  */
 
@@ -94,11 +96,11 @@ export function getInstructionsFromDB(recipeId, onSuccess, onError) {
 
 export function saveRecipeToDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError) {
     const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
-    const utensilsArgs = utensils.flatMap(utensil => [genUUID(), utensil.step, utensil.value, id])
+    const utensilsArgs = utensils.flatMap(utensil => [uuidv4(), utensil.step, utensil.value, id])
     const ingredientValues = ingredients.map(() => '(?,?,?,?)').join(',')
-    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.value, id])
+    const ingredientsArgs = ingredients.flatMap(ingredient => [uuidv4(), ingredient.step, ingredient.value, id])
     const instructionValues = instructions.map(() => '(?,?,?,?)').join(',')
-    const instructionsArgs = instructions.flatMap(instruction => [genUUID(), instruction.step, instruction.value, id])
+    const instructionsArgs = instructions.flatMap(instruction => [uuidv4(), instruction.step, instruction.value, id])
     db.transaction(tx => {
         tx.executeSql(
             'INSERT INTO recipes(id, title, nb_person, notes) VALUES (?,?,?,?)',
@@ -120,11 +122,11 @@ export function saveRecipeToDB(id, title, nbPerson, ingredients, instructions, u
 
 export function updateRecipeInDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onUpdate) {
     const utensilValues = utensils.map(() => '(?,?,?,?)').join(',')
-    const utensilsArgs = utensils.flatMap(utensil => [genUUID(), utensil.step, utensil.value, id])
+    const utensilsArgs = utensils.flatMap(utensil => [uuidv4(), utensil.step, utensil.value, id])
     const ingredientValues = ingredients.map(() => '(?,?,?,?)').join(',')
-    const ingredientsArgs = ingredients.flatMap(ingredient => [genUUID(), ingredient.step, ingredient.value, id])
+    const ingredientsArgs = ingredients.flatMap(ingredient => [uuidv4(), ingredient.step, ingredient.value, id])
     const instructionValues = instructions.map(() => '(?,?,?,?)').join(',')
-    const instructionsArgs = instructions.flatMap(instruction => [genUUID(), instruction.step, instruction.value, id])
+    const instructionsArgs = instructions.flatMap(instruction => [uuidv4(), instruction.step, instruction.value, id])
     db.transaction(tx => {
         tx.executeSql(
             'UPDATE recipes SET title=?, nb_person=?, notes=? WHERE id=?',
@@ -157,14 +159,6 @@ export function updateRecipeInDB(id, title, nbPerson, ingredients, instructions,
 function onError(action, err) {
     console.log("DB error for " + action + ":", err)
     return false
-}
-
-function genUUID() {
-    const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    })
-    return id
 }
 
 /* ____________ Delete  ____________  */

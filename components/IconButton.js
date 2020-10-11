@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View} from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function IconButton({name, onPress, icon, disabled = false}) {
     return (
@@ -9,7 +9,7 @@ export default function IconButton({name, onPress, icon, disabled = false}) {
             disabled={disabled}
             style={styles.button}>
             <View>
-                <FontAwesome style={disabled ? styles.iconDisabled : styles.icon} name={icon}/>
+                <FontAwesome5 style={disabled ? styles.iconDisabled : styles.icon} name={icon}/>
                 <Text style={disabled ? styles.textDisabled : styles.text}>{name}</Text>
             </View>
         </TouchableOpacity>

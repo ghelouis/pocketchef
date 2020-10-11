@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
 import i18n from "i18n-js";
-import TextButton from "../components/TextButton";
 import {getRecipesFromDB} from "../utils/database";
 import {getAllImages} from "../utils/images";
 import IconButton from "../components/IconButton";
+import {importRecipe} from "../utils/import";
 
 /**
  * List all recipes
@@ -47,6 +47,10 @@ export default function RecipesScreen({ navigation }) {
         return false
     }
 
+    const onImportRecipeSuccess = () => {
+        getRecipesFromDB(onSuccess, onError);
+    }
+
     return (
         <View style={styles.main}>
             <FlatList
@@ -76,10 +80,18 @@ export default function RecipesScreen({ navigation }) {
                     </TouchableHighlight>
                 )}
             />
-            <TextButton
-                title={i18n.t('new')}
-                onPress={() => navigation.navigate('AddRecipe')}
-            />
+            <View style={styles.buttonContainer}>
+                <IconButton
+                    name={i18n.t('import')}
+                    onPress={() => importRecipe(onImportRecipeSuccess)}
+                    icon={"file-import"}
+                />
+                <IconButton
+                    name={i18n.t('new')}
+                    onPress={() => navigation.navigate('AddRecipe')}
+                    icon={"plus"}
+                />
+            </View>
         </View>
     );
 }
@@ -118,6 +130,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: "space-evenly"
     }
 });
 

@@ -58,7 +58,7 @@ export async function updateMainImages(recipeId, uris) {
 }
 
 export async function deleteAllImages(recipeId) {
-    return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId)
+    return FileSystem.deleteAsync(FileSystem.documentDirectory + 'recipes/' + recipeId, {idempotent: true})
 }
 
 export async function getAllImages() {
