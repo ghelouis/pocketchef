@@ -1,6 +1,8 @@
 # About
 Pocket Chef is a free and open source recipe manager mobile application.
 
+<img src="assets/images/icon.png" width="100" height="100"/>
+
 ![Screenshots](screenshots/Screenshots.md)
 
 Overview:
