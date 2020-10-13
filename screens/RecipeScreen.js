@@ -25,18 +25,20 @@ export default function RecipeScreen({ route, navigation }) {
         if (route.params?.nbPerson) {
             setDisplayNbPerson(route.params.nbPerson)
         }
-    }, [route.params?.nbPerson]);
+        if (route.params?.title) {
+            navigation.setOptions({title: title})
+        }
+    }, [route.params?.nbPerson, route.params?.title])
     const {recipeId, title, nbPerson, notes} = route.params
-    navigation.setOptions({title: title})
     const [images, setImages] = useState([])
     useEffect(() => {
         navigation.addListener('focus', () => {
             loadRecipe()
             loadImages()
-        });
+        })
     }, [])
     const [imageViewerModalState, setImageViewerModalState] = useState({isVisible: false, imgIndex: 0})
-    const [displayNbPerson, setDisplayNbPerson] = useState(1);
+    const [displayNbPerson, setDisplayNbPerson] = useState(1)
     const [ingredients, setIngredients] = useState([])
     const [originalIngredients, setOriginalIngredients] = useState([])
     const [instructions, setInstructions] = useState([])
