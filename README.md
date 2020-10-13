@@ -16,9 +16,9 @@ Overview:
 # Mindset
 The idea is to apply the [KISS
 principle](https://en.wikipedia.org/wiki/KISS_principle) and try and keep
-things as simple as possible. This makes it easier for developers as wells as
+things as simple as possible. This makes it easier for developers as well as
 users. This approach led to:
-- the app is written in pure javascript, with as little libraries as possible;
+- the app is written in pure javascript, with as few libraries as possible;
 - the import/export format uses raw text (markdown-flavored) and zip, both
 of which are easy to handle and understand.
 
