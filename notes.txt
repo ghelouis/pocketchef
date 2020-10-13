@@ -1,30 +1,3 @@
-Export
-------
-en pause, pas de soluce satisfaisante avec expo pur pour le moment :/
-https://expo.canny.io/feature-requests/p/ability-to-save-files-on-internal-storage
-
-pistes étudiées:
-  expo MediaLibrary:
-    fonctionne pour créer des fichiers/dossiers mais plutôt fait pour de la
-    musique/images: créé les objects dans la galerie...
-    - l'utilisateur ne peut pas choisir le dossier cible...
-    - le bazar quand sauvegarde multiple: duplique les fichiers existants avec
-    _n, aucun contrôle là-dessus
-  expo Sharing:
-    beautifully simple, one liner to export a file and prompt the user for an
-    app able to handle it.
-    Go! Coupled with .zip maker should be fine, now? :)
-    YES. with JsZip.
-  raw react access to external storage? https://github.com/itinance/react-native-fs
-
-
-ingrédients
------------
-use case non géré: liste d'ingrédients / préparation pour 2 choses à faire pour
-cette recette: ex gâteau + glaçage, ou plat + sauce. Hmm...
-Right now kinda ok: lister ingreds à la suite, same pour la préparation
-
-
 
 
 gestion des erreurs: popup instead of console.log?
@@ -38,23 +11,10 @@ gestion des erreurs: popup instead of console.log?
   préparation: no number(?), paragraphes
 
 
-
-
 attach any kind of file?
 e.g pdf,... + on click propose to open with phone eligible apps
 
 
-
-# Photos Management
-- stored on the file system
-
-<recipe-uuid>
- |
- |-- 1.jpg // main
- |-- 2.jpg
- |-- ...
-
-- can be exported from an existing photo or by taking one directly
 
 # Durée
 temps total = temps de préparation + temps de cuisson
