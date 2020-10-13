@@ -1,6 +1,6 @@
 
 # Run
-- `yarn start` (which runs expo start)
+- run on local network: `expo start`
 - run on android via usb locally without internet: `expo start --offline --localhost --android`
 
 # Clear cache

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import {Platform, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RecipesScreen from './screens/RecipesScreen';
@@ -12,6 +12,8 @@ import frLangFile from './languages/fr.json'
 import enLangFile from './languages/en.json'
 import {initDB} from "./utils/database";
 import {createRecipesDir} from "./utils/images";
+import AboutScreen from "./screens/AboutScreen";
+import {FontAwesome5} from "@expo/vector-icons";
 
 i18n.translations = {
   en: enLangFile,
@@ -30,7 +32,8 @@ export default function App(props) {
     createRecipesDir()
     setLoadingComplete(true)
   }
-  // Load any resources or data that we need prior to rendering the app
+
+
   React.useEffect(() => {
     initDB(onInitComplete)
   }, [])
@@ -46,7 +49,18 @@ export default function App(props) {
             <Stack.Screen
                 name="Recipes"
                 component={RecipesScreen}
-                options={{ title: i18n.t('recipes') }}
+                options={({navigation}) => ({
+                    title: i18n.t('recipes'),
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('About')}>
+                            <FontAwesome5
+                                style={styles.headerButton}
+                                name={"info-circle"}/>
+                        </TouchableOpacity>
+                    )
+                })
+                }
             />
             <Stack.Screen
                 name="AddRecipe"
@@ -62,6 +76,11 @@ export default function App(props) {
                 component={EditRecipeScreen}
                 options={{ title: i18n.t('editRecipe') }}
             />
+            <Stack.Screen
+                name="About"
+                component={AboutScreen}
+                options={{ title: i18n.t('about.title') }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
@@ -74,4 +93,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  headerButton: {
+    color: '#2b2b2b',
+    fontSize: 20,
+    marginRight: 10
+  }
 });

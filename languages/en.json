@@ -34,5 +34,11 @@
     "parseFailure": "Unable to import recipe — incorrect file",
     "importSaveFailure": "Failed to save recipe :'( ",
     "invalidZipContent": "Invalid zip content — make sure to have a .md at the root of with the same name as the archive"
+  },
+  "about": {
+    "title": "About",
+    "authorDescription": "Developed by Guillaume Hélouis",
+    "contactDescription": "Contact",
+    "sourceCode": "Source code"
   }
 }

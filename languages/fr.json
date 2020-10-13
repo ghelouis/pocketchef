@@ -34,5 +34,11 @@
     "parseFailure": "Échec d'import de la recette — fichier incorrect",
     "importSaveFailure": "Erreur lors de la sauvegarde de la recette :'( ",
     "invalidZipContent": "Le contenu du zip est invalide — vérifier qu'un .md se situe à la racine avec le même nom que l'archive"
+  },
+  "about": {
+    "title": "À propos",
+    "authorDescription": "Développé par Guillaume Hélouis",
+    "contactDescription": "Contact",
+    "sourceCode": "Code source"
   }
 }
