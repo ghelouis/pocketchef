@@ -8,9 +8,9 @@ import * as Linking from 'expo-linking';
  * Display information about this app
  */
 export default function AboutScreen() {
-    const email = "pocketchef@ghelouis.fr"
-    const license = "GPLv3"
-    const sourceCodeUrl = "https://github.com/ghelouis/pocketchef"
+    const email = Constants.manifest.extra.developerEmail
+    const license = Constants.manifest.extra.license
+    const sourceCodeUrl = Constants.manifest.extra.sourceCodeUrl
 
     return (
         <ScrollView>

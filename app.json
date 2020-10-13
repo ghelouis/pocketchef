@@ -1,24 +1,26 @@
 {
   "expo": {
     "name": "Pocket Chef",
+    "icon": "./assets/images/icon.png",
+    "version": "1.0.0",
     "slug": "PocketChef",
     "description": "All your recipes in your pocket.",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "pocket-chef",
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "fr.ghelouis.pocketchef",
+      "versionCode": 1
+    },
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
-      }
+      "bundleIdentifier": "fr.ghelouis.pocketchef",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true
+    },
+    "extra": {
+      "developerEmail": "pocketchef@ghelouis.fr",
+      "license": "GPLv3",
+      "sourceCodeUrl": "https://github.com/ghelouis/pocketchef"
     }
   }
 }
