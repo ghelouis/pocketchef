@@ -1,4 +1,10 @@
 
+user docs
+---------
+zip must not contain root dir, e.g if creating it manually
+
+
+
 
 gestion des erreurs: popup instead of console.log?
 

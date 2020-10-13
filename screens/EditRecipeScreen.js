@@ -86,7 +86,7 @@ export default function EditRecipeScreen({ route, navigation }) {
         if (Constants.platform.ios) {
             const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
             if (status !== 'granted') {
-                alert(i18n.t('errors.missingPermission'))
+                alert(i18n.t('errors.missingPermissionError'))
             } else {
                 await pickTheImage()
             }
@@ -112,7 +112,7 @@ export default function EditRecipeScreen({ route, navigation }) {
     const takePicture = async () => {
         const {status} = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL)
         if (status !== 'granted') {
-            alert(i18n.t('errors.missingPermission'))
+            alert(i18n.t('errors.missingPermissionError'))
         } else {
             await takeThePicture()
         }

@@ -1,5 +1,5 @@
 {
-  "titre": "Title",
+  "title": "Title",
   "ingredients": "Ingredients",
   "instructions": "Instructions",
   "utensils": "Utensils",
@@ -20,7 +20,7 @@
   "export": "Export",
   "import": "Import",
   "delete": "Delete",
-  "edit": "Edit,",
+  "edit": "Edit",
   "new": "New recipe",
   "cancel": "Cancel",
   "pickImage": "Gallery",
@@ -29,11 +29,10 @@
   "error": "Error",
   "importSuccess": "Recipe successfully imported",
   "errors": {
-    "missingPermission": "Sorry, the camera roll permission is needed to make this work!",
+    "missingPermissionError": "Sorry, the camera roll permission is needed to make this work!",
     "wrongDocType": "Please select a .zip archive or a .md file",
     "parseFailure": "Unable to import recipe — incorrect file",
-    "import": "Failed to save recipe :'( ",
-    "invalidZip": "Invalid zip file",
-    "extractZip": "Error when trying to extract archive"
+    "importSaveFailure": "Failed to save recipe :'( ",
+    "invalidZipContent": "Invalid zip content — make sure to have a .md at the root of with the same name as the archive"
   }
 }

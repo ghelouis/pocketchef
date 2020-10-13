@@ -29,11 +29,10 @@
   "error": "Erreur",
   "importSuccess": "Recette importée avec succès",
   "errors": {
-    "missingPermission": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
+    "missingPermissionError": "Désolé, l'accès à l'appareil photo est nécessaire pour accéder à cette fonctionnalité!",
     "wrongDocType": "Veuillez sélectionner une archive .zip ou un fichier .md",
     "parseFailure": "Échec d'import de la recette — fichier incorrect",
-    "import": "Erreur lors de la sauvegarde de la recette :'( ",
-    "invalidZip": "Fichier .zip invalide",
-    "extractZip": "Erreur lors de l'extraction de l'archive"
+    "importSaveFailure": "Erreur lors de la sauvegarde de la recette :'( ",
+    "invalidZipContent": "Le contenu du zip est invalide — vérifier qu'un .md se situe à la racine avec le même nom que l'archive"
   }
 }

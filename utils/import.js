@@ -49,7 +49,7 @@ async function importMd(md, recipeId, onImportRecipeSuccess) {
             onImportRecipeSuccess()
             popup(i18n.t('importSuccess'))
         },
-        () => popup(i18n.t('errors.import')))
+        () => popup(i18n.t('errors.importSaveFailure')))
 }
 
 async function importZip(fileInCache, name, recipeId, onImportRecipeSuccess) {
@@ -66,14 +66,18 @@ async function importZip(fileInCache, name, recipeId, onImportRecipeSuccess) {
                 })
             }
         })
-        zip.file(mdFile).async("string").then((md) => {
-            importMd(md, recipeId, onImportRecipeSuccess)
-        })
+        try {
+            zip.file(mdFile).async("string").then((md) => {
+                importMd(md, recipeId, onImportRecipeSuccess)
+            })
+        } catch(error) {
+           errorPopup(i18n.t('errors.invalidZipContent'))
+        }
     })
 }
 
 function recipeFromMarkdown(md) {
-    const lines = md.split("\n").filter(l => l !== "")
+    const lines = md.split("\n")
     const recipe = {
         title: undefined,
         nbPerson: 1,
@@ -96,11 +100,11 @@ function recipeFromMarkdown(md) {
         }
         if (line.startsWith('##')) {
             setCurrentBlock(currentBlock, line)
-        } else if (currentBlock.isIngredients) {
+        } else if (currentBlock.isIngredients && line !== "") {
             recipe.ingredients = [...recipe.ingredients, {step: recipe.ingredients.length, value: parseListItem(line)}]
-        } else if (currentBlock.isInstructions) {
+        } else if (currentBlock.isInstructions && line !== "") {
             recipe.instructions = [...recipe.instructions, {step: recipe.instructions.length, value: parseListItem(line)}]
-        } else if (currentBlock.isUtensils) {
+        } else if (currentBlock.isUtensils && line !== "") {
             recipe.utensils = [...recipe.utensils, {step: recipe.utensils.length, value: parseListItem(line)}]
         } else if (currentBlock.isNotes) {
             if (recipe.notes === undefined) {
@@ -124,7 +128,7 @@ function setCurrentBlock(currentBlock, line) {
         currentBlock.isInstructions = true
     } else if (line === ('## ' + i18n.t('utensils'))) {
         currentBlock.isUtensils = true
-    } else if (line === ('## Notes')) {
+    } else {
         currentBlock.isNotes = true
     }
 }
