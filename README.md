@@ -1,21 +1,51 @@
+# About
+Pocket Chef is a free and open source recipe manager mobile application.
 
-# Run
+![screenshots](screenshots/recipes.jpg)
+![screenshots](screenshots/recipe.jpg)
+![screenshots](screenshots/add_recipe.jpg)
+![screenshots](screenshots/edit_recipe.jpg)
+
+Overview:
+- No network connection necessary, everything happens on your device 
+- Add/take photos
+- Ingredients, instructions, utensils and notes distinct sections
+- Number of people toggler with ingredient quantity multiplication
+- Export a recipe (to markdown or zip if there are pictures)
+- Import a recipe
+- Multi-lang (English & French)
+- Multi-platform (available on Android and iOS, soon!)
+
+# Mindset
+The idea is to apply the [KISS
+principle](https://en.wikipedia.org/wiki/KISS_principle) and try and keep
+things as simple as possible. This makes it easier for developers as wells as
+users. This approach led to:
+- the app is written in pure javascript, with as little libraries as possible;
+- the import/export format uses raw text (markdown-flavored) and zip, both
+of which are easy to handle and understand.
+
+# Development
+This is a cross-platform (Android & iOS) app built in React Native using
+[Expo](https://expo.io/). The code source is purely javascript.
+
+## Run
 - run on local network: `expo start`
 - run on android via usb locally without internet: `expo start --offline --localhost --android`
 
-# Clear cache
+## Clear cache
 - `expo r -c`
 
-# Publish
+## Publish
 - `expo publish`
 
-# Manage dependencies
+## Manage dependencies
 - Install package: `expo install <package>`
 - Remove package: `yarn remove <package>`
 
-# Libs used
-- UUIDs https://github.com/uuidjs/uuid + https://github.com/LinusU/react-native-get-random-values
-- Multi-lang support https://docs.expo.io/versions/latest/sdk/localization/
+## Libraries used
+- UUIDs: https://github.com/uuidjs/uuid + https://github.com/LinusU/react-native-get-random-values
+- Multi-lang support: https://docs.expo.io/versions/latest/sdk/localization/
 - Image Picker (from camera or phone library): https://docs.expo.io/versions/latest/sdk/imagepicker/
 - Image slider (row of fixed size images): https://github.com/intellidev1991/react-native-image-slider-box
 - Image viewer (full screen images with zoom): https://github.com/jobtoday/react-native-image-viewing
@@ -23,4 +53,4 @@
 - Exporting/sharing: Expo sharing https://docs.expo.io/versions/latest/sdk/sharing/
 - Zip: JsZip + fix for expo: https://github.com/Stuk/jszip/issues/521
 - Importing: Expo Document Picker https://docs.expo.io/versions/latest/sdk/document-picker/
-- Icons: FontAwesome (expo vector icons) https://icons.expo.fyi/
+- Icons: FontAwesome via expo vector icons: https://docs.expo.io/guides/icons/ (see full list here: https://icons.expo.fyi/)
