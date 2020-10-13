@@ -1,3 +1,3 @@
 
-![screenshots](screenshots/recipes.jpg) ![screenshots](screenshots/recipe.jpg)
-![screenshots](screenshots/add_recipe.jpg) ![screenshots](screenshots/edit_recipe.jpg)
+![screenshots](recipes.jpg) ![screenshots](recipe.jpg)
+![screenshots](add_recipe.jpg) ![screenshots](edit_recipe.jpg)
