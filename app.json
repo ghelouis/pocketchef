@@ -2,6 +2,9 @@
   "expo": {
     "name": "Pocket Chef",
     "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png"
+    },
     "version": "1.0.0",
     "slug": "PocketChef",
     "description": "All your recipes in your pocket.",
@@ -10,12 +13,17 @@
     ],
     "android": {
       "package": "fr.ghelouis.pocketchef",
-      "versionCode": 1
+      "versionCode": 1,
+      "permissions": ["CAMERA", " READ_EXTERNAL_STORAGE"]
     },
     "ios": {
       "bundleIdentifier": "fr.ghelouis.pocketchef",
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "For taking a photo of your recipe",
+        "NSPhotoLibraryUsageDescription": "For importing a photo on a recipe"
+      }
     },
     "extra": {
       "developerEmail": "pocketchef@ghelouis.fr",
