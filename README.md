@@ -15,6 +15,8 @@ Overview:
 - Multi-lang (English & French)
 - Multi-platform (available on Android and iOS, soon!)
 
+The import/export feature effectively enables users to send each other recipes (e.g via whatsapp or email). It is a very simple format which also means that users are free to write recipes outside of Pocket Chef before importing them. If curious, the specifics of the format can be found in the wiki [here](https://github.com/ghelouis/pocketchef/wiki/Recipe-format).
+
 # Mindset
 The idea is to apply the [KISS
 principle](https://en.wikipedia.org/wiki/KISS_principle) and try and keep
