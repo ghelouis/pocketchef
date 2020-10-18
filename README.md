@@ -13,7 +13,7 @@ Overview:
 - Export a recipe (to markdown or zip if there are pictures)
 - Import a recipe
 - Multi-lang (English & French)
-- Multi-platform (available on Android and iOS, soon!)
+- Multi-platform: available on [Android](https://play.google.com/store/apps/details?id=fr.ghelouis.pocketchef) and iOS, soon!
 
 The import/export feature effectively enables users to send each other recipes (e.g via whatsapp or email). It is a very simple format which also means that users are free to write recipes outside of Pocket Chef before importing them. If curious, the specifics of the format can be found in the wiki [here](https://github.com/ghelouis/pocketchef/wiki/Recipe-format).
 
