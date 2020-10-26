@@ -4,7 +4,7 @@ Pocket Chef is a free and open source recipe manager mobile application.
 <img src="assets/images/icon.png" width="100" height="100"/>
 
 <a href="https://play.google.com/store/apps/details?id=fr.ghelouis.pocketchef"><img alt="Get it on Google Play" src="readme_assets/download_badges/play_store_badge.png" height="50"/></a>
-<a href="https://apps.apple.com/us/app/pocket-chef/id1536915775#?platform=iphone"><img alt="Download on the App Store" src="readme_assets/download_badges/app_store_badge.png" height="50"/></a>
+<a href="https://apps.apple.com/us/app/pocket-chef/id1536915775#?platform=iphone"><img alt="Download on the App Store" src="readme_assets/download_badges/app_store_badge.svg" height="50"/></a>
 
 ![Screenshots](readme_assets/screenshots/Screenshots.md)
 
