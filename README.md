@@ -36,6 +36,7 @@ of which are easy to handle and understand.
 # Development
 This is a cross-platform (Android & iOS) app built in React Native using
 [Expo](https://expo.io/). The code source is purely javascript.
+Contributions are most welcome. Check out the [roadmap](https://github.com/ghelouis/pocketchef/projects/1).
 
 ## Run
 - run on local network: `expo start`
