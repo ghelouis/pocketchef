@@ -33,6 +33,13 @@ users. This approach led to:
 - the import/export format uses raw text (markdown-flavored) and zip, both
 of which are easy to handle and understand.
 
+# Release Notes
+- v1.0.0:
+    - First Release
+- v1.1.0:
+    - Small UX improvements
+    - Fix icon background color for some android versions
+
 # Development
 This is a cross-platform (Android & iOS) app built in React Native using
 [Expo](https://expo.io/). The code source is purely javascript.
