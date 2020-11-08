@@ -119,6 +119,10 @@ export default function RecipeScreen({ route, navigation }) {
             i18n.t('deleteRecipe'),
             [
                 {
+                    text: i18n.t('cancel'),
+                    style: "cancel"
+                },
+                {
                     text: 'OK', onPress: () => {
                         deleteAllImages(recipeId).then(() => {
                             deleteRecipeFromDB(recipeId, onDeleteSuccess, onDeleteError)
