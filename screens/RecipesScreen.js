@@ -5,6 +5,7 @@ import {getRecipesFromDB} from "../utils/database";
 import {getAllImages} from "../utils/images";
 import IconButton from "../components/IconButton";
 import {importRecipe} from "../utils/import";
+import {FontAwesome5} from "@expo/vector-icons";
 
 /**
  * List all recipes
@@ -67,11 +68,16 @@ export default function RecipesScreen({ navigation }) {
                         onShowUnderlay={separators.highlight}
                         onHideUnderlay={separators.unhighlight}>
                         <View style={styles.itemContainer}>
-                            <Image
-                                source={{uri: item.uri}}
-                                resizeMode={'contain'}
-                                style={styles.image}
-                            />
+                            {item.uri ?
+                                <Image
+                                    source={{uri: item.uri}}
+                                    resizeMode={'contain'}
+                                    style={styles.image}
+                                /> :
+                                <View style={styles.imageIconContainer}>
+                                    <FontAwesome5 style={styles.imageIcon} name="image"/>
+                                </View>
+                            }
                             <View
                                 style={index === recipes.length - 1 ? styles.itemWrapper : styles.itemWrapperWithBottomBorder}>
                                 <Text style={styles.item}>{item.title}</Text>
@@ -111,6 +117,19 @@ const styles = StyleSheet.create({
         height: 50,
         margin: 5,
         borderRadius: 3
+    },
+    imageIconContainer: {
+        width: 50,
+        height: 50,
+        margin: 5,
+        borderRadius: 3,
+        justifyContent: 'center',
+        alignContent: 'center'
+    },
+    imageIcon: {
+        alignSelf: "center",
+        fontSize: 25,
+        color: '#b9b9b9'
     },
     item: {
         fontSize: 20

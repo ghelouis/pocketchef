@@ -69,7 +69,10 @@ export async function getAllImages() {
     const images = await (Promise.all(promises))
     const recipeIdToImageMap = new Map()
     for (let i = 0; i < dirContent.length; i++) {
-        recipeIdToImageMap.set(dirContent[i], mainImagesDir(dirContent[i]) + '/' + images[i][0])
+        const mainImage = images[i][0]
+        if (mainImage) {
+            recipeIdToImageMap.set(dirContent[i], mainImagesDir(dirContent[i]) + '/' + images[i][0])
+        }
     }
     return recipeIdToImageMap
 }
