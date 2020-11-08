@@ -33,7 +33,8 @@
     "wrongDocType": "Veuillez sélectionner une archive .zip ou un fichier .md",
     "parseFailure": "Échec d'import de la recette — fichier incorrect",
     "importSaveFailure": "Erreur lors de la sauvegarde de la recette :'( ",
-    "invalidZipContent": "Le contenu du zip est invalide — vérifier qu'un .md se situe à la racine avec le même nom que l'archive"
+    "invalidZipContent": "Le contenu du zip est invalide — vérifier qu'un .md se situe à la racine avec le même nom que l'archive",
+    "failedToSaveImages": "Échec de la sauvegarde - problème lors de la sauvegarde des images"
   },
   "about": {
     "title": "À propos",

@@ -15,6 +15,7 @@ import {saveMainImages} from "../utils/images";
 import {saveRecipeToDB} from "../utils/database";
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import {popup} from "../utils/popups";
 
 
 /**
@@ -52,6 +53,7 @@ export default function AddRecipeScreen({ navigation }) {
                 saveRecipeToDB(id, title, nbPerson, ingredients, instructions, utensils, notes, onSaveRecipe, onSaveRecipeError)
             }
         ).catch((err) => {
+            popup(i18n.t("errors.failedToSaveImages"))
             console.log("Add Recipe: Save images to file system error:", err)
         })
     }

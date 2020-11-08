@@ -33,7 +33,8 @@
     "wrongDocType": "Please select a .zip archive or a .md file",
     "parseFailure": "Unable to import recipe — incorrect file",
     "importSaveFailure": "Failed to save recipe :'( ",
-    "invalidZipContent": "Invalid zip content — make sure to have a .md at the root of with the same name as the archive"
+    "invalidZipContent": "Invalid zip content — make sure to have a .md at the root of with the same name as the archive",
+    "failedToSaveImages": "Failed to save recipe - a problem occured when trying to save the images"
   },
   "about": {
     "title": "About",
